@@ -1,0 +1,117 @@
+/* =========================
+   🎨 Estilo Global PetCare+
+   ========================= */
+:root {
+  --primary-purple: #7b4db8;
+  --secondary-beige: #f5f1ea;
+  --accent-pink: #d6a4ff;
+  --primary-green: #7ec8a4;
+  --text-dark: #333;
+  --text-light: #fff;
+  --radius: 15px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --font-main: 'Poppins', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background-color: var(--secondary-beige);
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Encabezados y estructura */
+header {
+  background-color: var(--primary-purple);
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Botón general */
+button {
+  border: none;
+  outline: none;
+  border-radius: var(--radius);
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+/* Botones principales */
+.btn-primary {
+  background-color: var(--primary-purple);
+  color: var(--text-light);
+  box-shadow: var(--shadow);
+}
+
+.btn-primary:hover {
+  background-color: #693ea5;
+}
+
+/* Botones secundarios */
+.btn-secondary {
+  background-color: var(--accent-pink);
+  color: var(--text-dark);
+}
+
+.btn-secondary:hover {
+  opacity: 0.9;
+}
+
+/* Contenido general */
+.content {
+  padding: 25px;
+  flex: 1;
+}
+
+/* Tarjetas base */
+.card {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+/* Botón de regreso */
+.back-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  opacity: 0.8;
+}
+
+/* Texto */
+p {
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+/* Links */
+a {
+  color: var(--primary-purple);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

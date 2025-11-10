@@ -1,0 +1,25 @@
+@import url('../style.css');
+
+.page-header {
+  background: var(--primary-green);
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+.content {
+  padding: 20px;
+}
+
+.card {
+  text-align: center;
+}

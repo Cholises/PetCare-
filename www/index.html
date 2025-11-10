@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a INMUPET</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/pages/login.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="onboarding-container">
+        <!-- Progress Indicator -->
+        <div class="progress-dots">
+            <span class="dot active" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+            <span class="dot" data-slide="2"></span>
+        </div>
+
+        <!-- Slides Container -->
+        <div class="slides-wrapper">
+            <!-- Slide 1 -->
+            <div class="slide active" data-slide="0">
+                <div class="slide-content">
+                    <div class="icon-container gradient-purple">
+                        <i class="fas fa-paw"></i>
+                        <div class="icon-bg-circle"></div>
+                        <div class="icon-bg-circle-2"></div>
+                    </div>
+                    <h1 class="slide-title">
+                        Bienvenido a <span class="gradient-text">PetCare+</span>
+                    </h1>
+                    <p class="slide-description">
+                        La mejor app para gestionar la salud de tus mascotas. 
+                        Lleva un control completo de vacunas, consultas veterinarias y mucho más.
+                    </p>
+                    <div class="slide-illustration">
+                        <div class="floating-card card-1">
+                            <i class="fas fa-syringe"></i>
+                            <span>Vacunas</span>
+                        </div>
+                        <div class="floating-card card-2">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Salud</span>
+                        </div>
+                        <div class="floating-card card-3">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Citas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide" data-slide="1">
+                <div class="slide-content">
+                    <div class="icon-container gradient-pink">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="icon-bg-circle"></div>
+                        <div class="icon-bg-circle-2"></div>
+                    </div>
+                    <h1 class="slide-title">
+                        Nunca Olvides <span class="gradient-text-pink">una Cita</span>
+                    </h1>
+                    <p class="slide-description">
+                        Recibe recordatorios de vacunas, desparasitaciones y citas veterinarias. 
+                        Mantén a tus mascotas siempre protegidas y saludables.
+                    </p>
+                    <div class="slide-illustration">
+                        <div class="calendar-mockup">
+                            <div class="calendar-header">
+                                <i class="fas fa-bell"></i>
+                                <span>Próximas Citas</span>
+                            </div>
+                            <div class="calendar-item">
+                                <div class="item-dot blue"></div>
+                                <span>Vacuna Max - 15 Nov</span>
+                            </div>
+                            <div class="calendar-item">
+                                <div class="item-dot green"></div>
+                                <span>Consulta Luna - 20 Nov</span>
+                            </div>
+                            <div class="calendar-item">
+                                <div class="item-dot orange"></div>
+                                <span>Desparasitación - 25 Nov</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide" data-slide="2">
+                <div class="slide-content">
+                    <div class="icon-container gradient-green">
+                        <i class="fas fa-heart"></i>
+                        <div class="icon-bg-circle"></div>
+                        <div class="icon-bg-circle-2"></div>
+                    </div>
+                    <h1 class="slide-title">
+                        Todo en <span class="gradient-text-green">un Solo Lugar</span>
+                    </h1>
+                    <p class="slide-description">
+                        Historial clínico completo, fotos, notas y datos importantes 
+                        de todas tus mascotas al alcance de tu mano.
+                    </p>
+                    <div class="slide-illustration">
+                        <div class="pet-cards">
+                            <div class="mini-pet-card">
+                                <div class="pet-avatar purple">🐕</div>
+                                <span>Max</span>
+                            </div>
+                            <div class="mini-pet-card">
+                                <div class="pet-avatar pink">🐱</div>
+                                <span>Luna</span>
+                            </div>
+                            <div class="mini-pet-card">
+                                <div class="pet-avatar blue">🐶</div>
+                                <span>Rocky</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="navigation-buttons">
+            <button class="btn-skip" id="skipBtn">
+                Saltar
+            </button>
+            <button class="btn-next" id="nextBtn">
+                <span class="btn-text">Siguiente</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="js/onboarding.js"></script>
+</body>
+</html>

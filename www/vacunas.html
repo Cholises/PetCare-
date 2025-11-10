@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vacunas - PetCare+</title>
+  <link rel="stylesheet" href="css/vacunas.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <header class="header">
+    <button class="back-btn" onclick="window.location.href='menu.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1>Vacunas 💉</h1>
+  </header>
+
+  <main class="container">
+    <section class="top-section">
+      <p class="subtitle">Mantén el control de las vacunas de tus mascotas</p>
+      <button class="btn-primary" id="openFormBtn">
+        <i class="fas fa-plus"></i> Agregar Vacuna
+      </button>
+    </section>
+
+    <!-- 🧾 Formulario Agregar Vacuna -->
+    <section id="vaccineFormSection" class="form-card hidden">
+      <h2><i class="fas fa-syringe"></i> Nueva Vacuna</h2>
+      <form id="vaccineForm">
+        <select id="petSelect" required>
+          <option value="">Selecciona una mascota</option>
+        </select>
+
+        <input type="text" id="vaccineName" placeholder="Nombre de la vacuna" required>
+        <label>Fecha aplicada:</label>
+        <input type="date" id="vaccineDate" required>
+        <label>Próxima dosis:</label>
+        <input type="date" id="nextDose">
+        <textarea id="vaccineNotes" placeholder="Notas adicionales (opcional)"></textarea>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Guardar</button>
+          <button type="button" class="btn-secondary" id="cancelFormBtn">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 📋 Lista de Vacunas -->
+    <section id="vaccineListSection">
+      <h2>Vacunas Registradas</h2>
+      <div id="vaccineList" class="vaccine-list">
+        <p class="empty-text">Aún no has registrado ninguna vacuna 🐾</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/vacunas.js"></script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio - PetCare+</title>
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/pages/login.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-content">
+      <div class="user-greeting">
+        <h1>Hola, <span id="userName">Usuario</span> 👋</h1>
+        <p>Cuida de tus mascotas hoy</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon notification-btn" id="notificationBtn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        <button class="btn-icon profile-btn" id="profileBtn">
+          <i class="fas fa-user-circle"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Quick Stats -->
+    <section class="quick-stats">
+      <div class="stat-card purple">
+        <div class="stat-icon">
+          <i class="fas fa-paw"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="totalPets">0</h3>
+          <p>Mascotas</p>
+        </div>
+      </div>
+      <div class="stat-card pink">
+        <div class="stat-icon">
+          <i class="fas fa-syringe"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="pendingVaccines">0</h3>
+          <p>Pendientes</p>
+        </div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="upcomingAppointments">0</h3>
+          <p>Próximas</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- My Pets Section -->
+    <section class="my-pets-section">
+      <div class="section-header">
+        <h2>Mis Mascotas</h2>
+      </div>
+
+      <div class="pets-grid" id="petsGrid">
+        <!-- Estado vacío -->
+        <div class="pet-card empty-state" id="emptyState">
+          <i class="fas fa-paw"></i>
+          <p>Aún no tienes mascotas registradas</p>
+          <button class="btn-primary-small" id="emptyStateBtn">
+            Agregar primera mascota
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions-section">
+      <h2>Acciones Rápidas</h2>
+      <div class="actions-grid">
+        <a href="vacunas.html" class="action-card">
+          <div class="action-icon purple"><i class="fas fa-syringe"></i></div>
+          <h3>Vacunas</h3><p>Control de vacunación</p>
+        </a>
+
+        <a href="citas.html" class="action-card">
+          <div class="action-icon pink"><i class="fas fa-calendar-alt"></i></div>
+          <h3>Citas</h3><p>Agenda veterinaria</p>
+        </a>
+
+        <a href="historial_medico.html" class="action-card">
+          <div class="action-icon blue"><i class="fas fa-file-medical"></i></div>
+          <h3>Historial</h3><p>Registro médico</p>
+        </a>
+
+        <a href="recordatorios.html" class="action-card">
+          <div class="action-icon orange"><i class="fas fa-bell"></i></div>
+          <h3>Recordatorios</h3><p>Alertas importantes</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- Upcoming Events -->
+    <section class="upcoming-events-section">
+      <div class="section-header">
+        <h2>Próximos Eventos</h2>
+        <a href="calendar.html" class="view-all">Ver todo <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="events-list" id="eventsList">
+        <div class="event-card">
+          <div class="event-date"><span class="day">15</span><span class="month">Nov</span></div>
+          <div class="event-info"><h3>Vacuna antirrábica</h3><p><i class="fas fa-paw"></i> Max</p></div>
+          <div class="event-type vaccine"><i class="fas fa-syringe"></i></div>
+        </div>
+
+        <div class="event-card">
+          <div class="event-date"><span class="day">20</span><span class="month">Nov</span></div>
+          <div class="event-info"><h3>Consulta veterinaria</h3><p><i class="fas fa-paw"></i> Luna</p></div>
+          <div class="event-type appointment"><i class="fas fa-stethoscope"></i></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 🔽 Modal para agregar mascota -->
+  <div id="addPetModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Agregar Mascota 🐾</h2>
+        <button id="closeModal" class="close-btn"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="petForm">
+        <label>Nombre:</label>
+        <input type="text" id="petName" placeholder="Ej. Max" required>
+
+        <label>Tipo:</label>
+        <select id="petType" required>
+          <option value="">Selecciona</option>
+          <option value="Perro">Perro</option>
+          <option value="Gato">Gato</option>
+          <option value="Ave">Ave</option>
+          <option value="Otro">Otro</option>
+        </select>
+
+        <label>Raza:</label>
+        <input type="text" id="petBreed" placeholder="Ej. Labrador">
+
+        <label>Edad:</label>
+        <input type="number" id="petAge" placeholder="Edad en años">
+
+        <label>Género:</label>
+        <select id="petGender">
+          <option value="">Selecciona</option>
+          <option value="Macho">Macho</option>
+          <option value="Hembra">Hembra</option>
+        </select>
+
+        <label>Notas:</label>
+        <textarea id="petNotes" rows="3" placeholder="Información adicional..."></textarea>
+
+        <button type="submit" class="btn-primary">Guardar Mascota</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="menu.html" class="nav-item active"><i class="fas fa-home"></i><span>Inicio</span></a>
+    <a href="calendario.html" class="nav-item"><i class="fas fa-calendar"></i><span>Calendario</span></a>
+    <a href="#" class="nav-item add-button" id="quickAddBtn"><div class="add-icon"><i class="fas fa-plus"></i></div></a>
+    <a href="search.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="js/menu.js"></script>
+  <script src="js/mascotas.js"></script>
+</body>
+</html>
