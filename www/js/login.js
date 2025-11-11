@@ -27,34 +27,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ==== Inicio de Sesión ====
     loginForm.addEventListener("submit", (e) => {
-        e.preventDefault();
+            e.preventDefault();
 
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
 
-        // Obtener usuarios guardados
-        const users = JSON.parse(localStorage.getItem("users") || "[]");
+            // Deshabilitar botón
+            const btnSubmit = loginForm.querySelector('.btn-login');
+            const textoOriginal = btnSubmit.querySelector('.btn-text').textContent;
+            btnSubmit.disabled = true;
+            btnSubmit.querySelector('.btn-text').textContent = 'Iniciando sesión...';
 
-        // Buscar usuario que coincida
-        const userFound = users.find(user => user.email === email && user.password === password);
+            (async () => {
+                try {
+                    // Llamar a la API
+                    const response = await api.login(email, password);
 
-        if (!userFound) {
-            alert("Correo o contraseña incorrectos");
-            return;
-        }
+                    // Guardar usuario logueado
+                    localStorage.setItem("currentUser", JSON.stringify(response.usuario));
 
-        // Guardar usuario logueado
-        localStorage.setItem("currentUser", JSON.stringify(userFound));
+                    // Guardar "Recordarme" si está marcado
+                    if (rememberMe.checked) {
+                        localStorage.setItem("rememberedLogin", JSON.stringify({ email, password }));
+                    } else {
+                        localStorage.removeItem("rememberedLogin");
+                    }
 
-        // Guardar “Recordarme” si está marcado
-        if (rememberMe.checked) {
-            localStorage.setItem("rememberedLogin", JSON.stringify({ email, password }));
-        } else {
-            localStorage.removeItem("rememberedLogin");
-        }
+                    // Mostrar éxito y redirigir
+                    alert(`¡Bienvenido ${response.usuario.nombre}!`);
+                    window.location.href = "menu.html";
 
-        // Redirigir al menú
-        window.location.href = "menu.html";
+                } catch (error) {
+                    console.error('Error en login:', error);
+                    alert(error.message || "Correo o contraseña incorrectos");
+                
+                    // Restaurar botón
+                    btnSubmit.disabled = false;
+                    btnSubmit.querySelector('.btn-text').textContent = textoOriginal;
+                }
+            })();
     });
 
 });

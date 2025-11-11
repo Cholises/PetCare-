@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Guardar mascota
-  form?.addEventListener("submit", (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -32,15 +32,39 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const nombre = document.getElementById("petName").value.trim();
+    const tipo = document.getElementById("petType").value;
+    const raza = document.getElementById("petBreed").value.trim();
+    const edad = document.getElementById("petAge").value || "No definida";
+    const genero = document.getElementById("petGender").value || "No definido";
+    const notas = document.getElementById("petNotes").value.trim();
+
+    // Si hay cliente API disponible y token, usar API
+    try {
+      if (typeof api !== 'undefined' && api.getToken()) {
+        const res = await api.createPet(nombre, tipo, raza, edad, genero, notas);
+        alert(`🐶 ${res.mascota.nombre} fue agregada con éxito`);
+        form.reset();
+        modal.classList.add("hidden");
+        // Notificar al resto de la app que se agregó una mascota
+        window.dispatchEvent(new CustomEvent('pet:created', { detail: res.mascota }));
+        return;
+      }
+    } catch (err) {
+      console.error('Error creando mascota por API:', err);
+      // fallback a localStorage
+    }
+
+    // Fallback: localStorage
     const mascota = {
       id: "p_" + Date.now(),
-      nombre: document.getElementById("petName").value.trim(),
-      tipo: document.getElementById("petType").value,
-      raza: document.getElementById("petBreed").value.trim(),
-      edad: document.getElementById("petAge").value || "No definida",
-      genero: document.getElementById("petGender").value || "No definido",
-      notas: document.getElementById("petNotes").value.trim(),
-      dueño: currentUser.correo,
+      nombre,
+      tipo,
+      raza,
+      edad,
+      genero,
+      notas,
+      dueño: currentUser.email || currentUser.correo || currentUser.nombreCompleto,
       creado: new Date().toISOString(),
     };
 
@@ -51,5 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
     alert(`🐶 ${mascota.nombre} fue agregada con éxito`);
     form.reset();
     modal.classList.add("hidden");
+    window.dispatchEvent(new CustomEvent('pet:created', { detail: mascota }));
   });
 });

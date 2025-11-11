@@ -1,0 +1,13 @@
+[
+  {
+    "id": "user_1762824973984",
+    "nombre": "Leonardo",
+    "apellido": "mendez",
+    "nombreCompleto": "Leonardo mendez",
+    "email": "l@gmail.com",
+    "telefono": "4651093255",
+    "password": "$2a$10$2lVmLbKF83UWJ9Vmzj.AWe80u/fPrxBsFFLGo7Z8iKrAbFLDYgL/O",
+    "creado": "2025-11-11T01:36:13.984Z",
+    "activo": true
+  }
+]

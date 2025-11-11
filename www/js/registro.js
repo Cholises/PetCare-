@@ -38,34 +38,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return /^\d{10}$/.test(tel);
     }
 
-    function evaluarFuerza(pw) {
-        if (pw.length === 0) {
-            passText.classList.add('hidden');
-            passBar.className = 'pass-bar';
-            return;
-        }
+    // function evaluarFuerza(pw) {
+    //     if (pw.length === 0) {
+    //         passText.classList.add('hidden');
+    //         passBar.className = 'pass-bar';
+    //         return;
+    //     }
 
-        if (passText.classList.contains('hidden')) passText.classList.remove('hidden');
+    //     if (passText.classList.contains('hidden')) passText.classList.remove('hidden');
 
-        let fuerza = 0;
-        if (pw.length >= 8) fuerza++;
-        if (/[0-9]/.test(pw)) fuerza++;
-        if (/[!@#$%^&*(),.?":{}|<>]/.test(pw)) fuerza++;
+    //     let fuerza = 0;
+    //     if (pw.length >= 8) fuerza++;
+    //     if (/[0-9]/.test(pw)) fuerza++;
+    //     if (/[!@#$%^&*(),.?":{}|<>]/.test(pw)) fuerza++;
 
-        if (fuerza === 1) {
-            passBar.className = 'pass-bar pass-weak';
-            passText.textContent = "Básica";
-            passText.style.color = "#EF4444";
-        } else if (fuerza === 2) {
-            passBar.className = 'pass-bar pass-medium';
-            passText.textContent = "Recomendable";
-            passText.style.color = "#F59E0B";
-        } else {
-            passBar.className = 'pass-bar pass-strong';
-            passText.textContent = "Segura";
-            passText.style.color = "#10B981";
-        }
-    }
+    //     if (fuerza === 1) {
+    //         passBar.className = 'pass-bar pass-weak';
+    //         passText.textContent = "Básica";
+    //         passText.style.color = "#EF4444";
+    //     } else if (fuerza === 2) {
+    //         passBar.className = 'pass-bar pass-medium';
+    //         passText.textContent = "Recomendable";
+    //         passText.style.color = "#F59E0B";
+    //     } else {
+    //         passBar.className = 'pass-bar pass-strong';
+    //         passText.textContent = "Segura";
+    //         passText.style.color = "#10B981";
+    //     }
+    // }
 
     contrasena.addEventListener('input', e => {
         evaluarFuerza(e.target.value);
@@ -103,34 +103,69 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== SUBMIT ===== //
-    form.addEventListener('submit', e => {
+    const registroError = document.getElementById('registroError');
+
+    function mostrarError(msg) {
+        if (!registroError) return alert(msg);
+        registroError.textContent = msg;
+        registroError.classList.remove('hidden');
+    }
+
+    function limpiarError() {
+        if (!registroError) return;
+        registroError.textContent = '';
+        registroError.classList.add('hidden');
+    }
+
+    form.addEventListener('submit', async e => {
         e.preventDefault();
+        limpiarError();
+
         if (!validarFormulario()) {
-            alert("Por favor completa los datos correctamente.");
+            mostrarError('Por favor completa los datos correctamente.');
             return;
         }
 
-        const usuario = {
-            id: "u_" + Date.now(),
-            nombre: nombre.value.trim(),
-            apellido: apellido.value.trim(),
-            nombreCompleto: `${nombre.value.trim()} ${apellido.value.trim()}`,
-            email: correo.value.trim().toLowerCase(), // 👈 cambiado a 'email' para coincidir con login.js
-            telefono: telefono.value.trim(),
-            password: contrasena.value.trim(), // 👈 se guarda directamente
-            creado: new Date().toISOString()
-        };
+        // Deshabilitar botón durante el envío
+        btnRegistro.disabled = true;
+        const textoOriginal = btnRegistro.querySelector('.btn-text').textContent;
+        btnRegistro.querySelector('.btn-text').textContent = 'Registrando...';
 
-        // Guardar usuario
-        const users = JSON.parse(localStorage.getItem("users") || "[]");
-        users.push(usuario);
-        localStorage.setItem("users", JSON.stringify(users));
+        try {
+            // Llamar a la API
+            const response = await api.register(
+                nombre.value.trim(),
+                apellido.value.trim(),
+                correo.value.trim().toLowerCase(),
+                telefono.value.trim(),
+                contrasena.value.trim()
+            );
 
-        // Guardar usuario activo
-        localStorage.setItem("currentUser", JSON.stringify(usuario));
+            // Guardar usuario activo y token (api.register ya guarda token en api-client)
+            if (response.usuario) {
+                localStorage.setItem('currentUser', JSON.stringify(response.usuario));
+            }
 
-        // Redirigir a pantalla final
-        window.location.href = "creado.html";
+            // Mostrar éxito inline (breve) y redirigir
+            if (registroError) {
+                registroError.style.color = '#065f46'; // verde suave
+                registroError.textContent = 'Registro exitoso. Redirigiendo...';
+                registroError.classList.remove('hidden');
+            }
+
+            setTimeout(() => {
+                window.location.href = 'creado.html';
+            }, 700);
+
+        } catch (error) {
+            console.error('Error en registro:', error);
+            const msg = (error && error.message) ? error.message : 'Error al registrar. Intenta de nuevo.';
+            mostrarError(msg);
+
+            // Restaurar botón
+            btnRegistro.disabled = false;
+            btnRegistro.querySelector('.btn-text').textContent = textoOriginal;
+        }
     });
 
 });

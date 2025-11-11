@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: petcare-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: petcare
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: petcare123
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - petcare-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: petcare-api
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_URI: mongodb://admin:petcare123@mongodb:27017/petcare?authSource=admin
+      JWT_SECRET: tu_clave_secreta_super_segura_2024
+      NODE_ENV: production
+    depends_on:
+      - mongodb
+    networks:
+      - petcare-network
+
+  frontend:
+    image: node:18-alpine
+    container_name: petcare-frontend
+    working_dir: /app/www
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./www:/app/www
+    command: npx http-server -p 8000 -c-1
+    networks:
+      - petcare-network
+
+volumes:
+  mongodb_data:
+  mongodb_config:
+
+networks:
+  petcare-network:
+    driver: bridge

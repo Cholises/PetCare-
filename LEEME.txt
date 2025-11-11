@@ -1,0 +1,302 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║                       🐾 PETCARE+ v3.0 - ¡HOLA!                            ║
+║                                                                               ║
+║                   Aplicación para cuidar mascotas                           ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+📋 CONTENIDO DE ESTA CARPETA
+═════════════════════════════════════════════════════════════════════════════
+
+✅ ARCHIVOS NUEVOS/IMPORTANTES:
+
+  📌 start.bat ⭐⭐⭐
+     → Doble clic aquí para iniciar TODA LA APLICACIÓN
+     → Abre automáticamente API + Frontend
+     → LO MÁS FÁCIL
+
+  📌 mascotas.html (en www/)
+     → Nueva página mejorada para mascotas
+     → Fotos, edición, eliminación
+
+  📌 server-mongo.js
+     → Nuevo servidor con MongoDB integrado
+     → Fallback automático a JSON files
+
+  📌 INICIO_RAPIDO.md
+     → Lee esto para entender cómo funciona
+     → Guía rápida (5 minutos)
+
+  📌 MONGODB_SETUP.md
+     → Si quieres usar MongoDB
+     → Instalación paso a paso
+     → 3 opciones diferentes
+
+
+🚀 PARA EMPEZAR (ELIGE UNA)
+═════════════════════════════════════════════════════════════════════════════
+
+OPCIÓN 1 - LA MÁS FÁCIL ⭐⭐⭐
+───────────────────────────────
+1. Doble clic en: start.bat
+2. Listo
+3. Abre navegador: http://localhost:8000
+
+OPCIÓN 2 - Manual
+─────────────────
+En PowerShell:
+
+Terminal 1:
+  npm start
+
+Terminal 2:
+  cd www
+  npx http-server -p 8000 -c-1
+
+Navegador:
+  http://localhost:8000
+
+OPCIÓN 3 - Docker
+──────────────────
+  docker-compose up -d
+
+  Espera 30 segundos y abre:
+  http://localhost:8000
+
+
+📱 DESDE MÓVIL (En la red local)
+═════════════════════════════════════════════════════════════════════════════
+
+1. Abre PowerShell y ejecuta:
+   ipconfig
+
+2. Busca "IPv4 Address" (algo como: 192.168.1.50)
+
+3. En el móvil abre:
+   http://192.168.1.50:8000
+
+4. ¡Listo!
+
+
+📚 DOCUMENTACIÓN
+═════════════════════════════════════════════════════════════════════════════
+
+PRIMERO: INICIO_RAPIDO.md
+  → Qué es, cómo usar, acceso desde móvil
+
+LUEGO: MONGODB_SETUP.md
+  → Si quieres base de datos MongoDB
+  → 3 opciones: local, Docker, o cloud
+
+TÉCNICO: CAMBIOS_v3.md
+  → Qué cambió de versiones anteriores
+  → Arquitectura técnica
+  → Schemas de MongoDB
+
+PRODUCCIÓN: docker-compose.yml
+  → Para desplegar en producción
+
+
+✨ FUNCIONALIDADES
+═════════════════════════════════════════════════════════════════════════════
+
+✅ Registro de usuarios
+✅ Login seguro (JWT)
+✅ CREAR mascotas con foto
+✅ EDITAR mascotas
+✅ ELIMINAR mascotas
+✅ Agendar citas veterinarias
+✅ Registrar vacunas
+✅ Ver estadísticas
+✅ Acceso desde móvil (misma red)
+✅ MongoDB o JSON files
+
+
+🗄️ BASE DE DATOS
+═════════════════════════════════════════════════════════════════════════════
+
+El sistema FUNCIONA SIN necesidad de MongoDB.
+
+Opciones:
+
+1. SIN MongoDB (Recomendado para empezar):
+   → Los datos se guardan en: data/usuarios.json
+   → Funciona perfectamente
+   → Puedes cambiar después
+
+2. CON MongoDB Local:
+   → Descargar de: https://www.mongodb.com/try/download/community
+   → Ver guía en: MONGODB_SETUP.md
+
+3. CON MongoDB Atlas (Cloud - Gratuito):
+   → https://www.mongodb.com/cloud/atlas
+   → Ver instrucciones en: MONGODB_SETUP.md
+
+4. CON Docker:
+   → docker-compose up -d
+   → Ver en: docker-compose.yml
+
+
+🧪 PROBAR QUE FUNCIONA
+═════════════════════════════════════════════════════════════════════════════
+
+OPCIÓN 1:
+  → Doble clic en: test-complete.bat
+
+OPCIÓN 2:
+  → Ve a http://localhost:8000
+  → Haz clic en "Saltar"
+  → Ve a "Registro"
+  → Crea una cuenta
+  → Agrega una mascota
+  → ¡Listo!
+
+
+📂 ESTRUCTURA DE CARPETAS
+═════════════════════════════════════════════════════════════════════════════
+
+PetCare-/
+├── start.bat ← EJECUTA ESTO
+├── server-mongo.js ← Nuevo servidor (MongoDB)
+├── server.js ← Servidor antiguo (JSON)
+│
+├── www/ ← Frontend (HTML, CSS, JS)
+│   ├── mascotas.html ← NUEVA página mejorada
+│   ├── login.html
+│   ├── registro.html
+│   ├── js/api-client.js ← Cliente HTTP
+│   └── ...
+│
+├── data/ ← Se crea automáticamente
+│   ├── usuarios.json
+│   ├── mascotas.json
+│   ├── citas.json
+│   └── vacunas.json
+│
+├── INICIO_RAPIDO.md ← Lee primero
+├── MONGODB_SETUP.md ← Si quieres MongoDB
+├── CAMBIOS_v3.md ← Cambios técnicos
+├── docker-compose.yml ← Para Docker
+└── Dockerfile ← Para Docker
+
+
+🚀 COMANDOS ÚTILES
+═════════════════════════════════════════════════════════════════════════════
+
+# Instalar dependencias (primera vez)
+npm install
+
+# Iniciar API (main)
+npm start
+
+# Iniciar API con auto-reload
+npm run dev
+
+# Iniciar frontend
+cd www && npx http-server -p 8000 -c-1
+
+# Ver usuarios creados
+type data\usuarios.json
+
+# Ver mascotas
+type data\mascotas.json
+
+# Correr tests
+.\test-complete.bat
+
+
+🔐 SEGURIDAD
+═════════════════════════════════════════════════════════════════════════════
+
+✅ Contraseñas hasheadas con bcrypt
+✅ JWT tokens (válidos 7 días)
+✅ Endpoints protegidos
+✅ CORS configurado
+✅ Body size limit: 50MB (para fotos)
+
+
+❓ DUDAS FRECUENTES
+═════════════════════════════════════════════════════════════════════════════
+
+P: ¿Necesito MongoDB?
+R: No, funciona sin. Usa JSON files y ya. Instala MongoDB cuando quieras.
+
+P: ¿Cómo acceso desde móvil?
+R: Misma red WiFi + tu IP local. Ver sección "📱 DESDE MÓVIL"
+
+P: ¿Dónde se guardan los datos?
+R: En carpeta "data/" - archivos JSON
+
+P: ¿Puedo usar Docker?
+R: Sí, hay docker-compose.yml listo para usar
+
+P: ¿Qué hago si sale error?
+R: Revisa INICIO_RAPIDO.md en sección "Troubleshooting"
+
+
+🎯 PASOS RÁPIDOS
+═════════════════════════════════════════════════════════════════════════════
+
+1. start.bat (doble clic)
+   ↓
+2. http://localhost:8000 (en navegador)
+   ↓
+3. Clic "Saltar"
+   ↓
+4. Clic "Registro"
+   ↓
+5. Crea una cuenta
+   ↓
+6. Agrega una mascota
+   ↓
+7. ¡LISTO! 🎉
+
+
+🌐 URLS PRINCIPALES
+═════════════════════════════════════════════════════════════════════════════
+
+Frontend:        http://localhost:8000
+API:             http://localhost:5000
+API Health:      http://localhost:5000/api/health
+MongoDB:         mongodb://localhost:27017/petcare
+
+
+📞 SOPORTE / TROUBLESHOOTING
+═════════════════════════════════════════════════════════════════════════════
+
+Si algo no funciona:
+
+1. Lee: INICIO_RAPIDO.md
+2. Lee: MONGODB_SETUP.md
+3. Busca tu error en la sección "Troubleshooting"
+4. Prueba: .\test-complete.bat
+5. Verifica archivos en: data/
+
+
+💡 TIPS
+═════════════════════════════════════════════════════════════════════════════
+
+• El servidor muestra tu IP local al iniciar
+• Puedes compartir esa IP con otros en tu red
+• Los datos se guardan automáticamente
+• Las fotos se guardan en base64 (cambiar en v3.1)
+• Los tokens expiran en 7 días
+
+
+🎓 VERSIÓN
+═════════════════════════════════════════════════════════════════════════════
+
+PetCare+ v3.0
+Fecha: 10 de noviembre de 2025
+Estado: ✅ Producción Ready
+
+
+═════════════════════════════════════════════════════════════════════════════
+
+         ¿LISTO? → Doble clic en: start.bat
+
+═════════════════════════════════════════════════════════════════════════════
+
+🐾 ¡A CUIDAR MASCOTAS! 🐾
