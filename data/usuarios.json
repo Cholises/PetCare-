@@ -9,5 +9,41 @@
     "password": "$2a$10$2lVmLbKF83UWJ9Vmzj.AWe80u/fPrxBsFFLGo7Z8iKrAbFLDYgL/O",
     "creado": "2025-11-11T01:36:13.984Z",
     "activo": true
+  },
+  {
+    "id": "6913d88b0de2ba15d30e00fe",
+    "nombre": "Leonardo",
+    "apellido": "Mendez",
+    "email": "l@gmail.com",
+    "telefono": "4651093225",
+    "password": "$2a$10$a4sWsI8ILshokVrGDDQ3EuD52qRWozKVf5xPC0CqGgxxQfipFod/K",
+    "createdAt": "2025-11-12T00:44:59.568Z"
+  },
+  {
+    "id": "6913da2e2d2ab8c23f618b5d",
+    "nombre": "Juan",
+    "apellido": "Perez",
+    "email": "J@gmail.com",
+    "telefono": "4651084499",
+    "password": "$2a$10$jzIjdgEtqUvt81Kua9Z04./G2DVRWyzw.2ZLArW5qrFAIl7P3Nfqa",
+    "createdAt": "2025-11-12T00:51:58.029Z"
+  },
+  {
+    "id": "6913dc2823fe96d0483c38ca",
+    "nombre": "Giovanni",
+    "apellido": "Campos",
+    "email": "G@gmail.com",
+    "telefono": "4651084499",
+    "password": "$2a$10$gDGIjOXmbDuo5hQAYJ7dS.7.cIHwnptrkL140AiNGPAglhn9zr1py",
+    "createdAt": "2025-11-12T01:00:24.688Z"
+  },
+  {
+    "id": "6913dd0cc37cb1dd27bd378a",
+    "nombre": "Juan",
+    "apellido": "Herrera",
+    "email": "Juan@gmail.com",
+    "telefono": "4651084499",
+    "password": "$2a$10$jWn4AnmTMvMtAwWQl9wmLOgwH/RrfENK2cNWak2Yh/Xc.m5qhosly",
+    "createdAt": "2025-11-12T01:04:12.535Z"
   }
 ]

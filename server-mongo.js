@@ -175,8 +175,11 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
 
+    // Normalizar email para evitar problemas de mayúsculas/minúsculas
+    const emailNormalized = (email || '').toLowerCase().trim();
+
     // Verificar si usuario ya existe (MongoDB)
-    let usuario = await Usuario.findOne({ email });
+    let usuario = await Usuario.findOne({ email: emailNormalized });
     if (usuario) {
       return res.status(400).json({ error: 'El email ya está registrado' });
     }
@@ -189,7 +192,7 @@ app.post('/api/auth/register', async (req, res) => {
     usuario = new Usuario({
       nombre,
       apellido,
-      email,
+      email: emailNormalized,
       telefono,
       password: hashedPassword
     });
@@ -209,7 +212,7 @@ app.post('/api/auth/register', async (req, res) => {
       id: usuario._id.toString(),
       nombre,
       apellido,
-      email,
+      email: emailNormalized,
       telefono,
       password: hashedPassword,
       createdAt: new Date().toISOString()
@@ -241,13 +244,16 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Email y contraseña requeridos' });
     }
 
+    // Normalizar email
+    const emailNormalized = (email || '').toLowerCase().trim();
+
     // Buscar usuario (MongoDB primero, luego JSON)
-    let usuario = await Usuario.findOne({ email });
+    let usuario = await Usuario.findOne({ email: emailNormalized });
     
     if (!usuario) {
-      // Fallback a JSON
+      // Fallback a JSON (comparación insensible a mayúsculas)
       const usuarios = readData(usersFile);
-      const usuarioJSON = usuarios.find(u => u.email === email);
+      const usuarioJSON = usuarios.find(u => (u.email || '').toLowerCase() === emailNormalized);
       if (!usuarioJSON) {
         return res.status(401).json({ error: 'Credenciales inválidas' });
       }
