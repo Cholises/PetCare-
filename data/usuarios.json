@@ -45,5 +45,40 @@
     "telefono": "4651084499",
     "password": "$2a$10$jWn4AnmTMvMtAwWQl9wmLOgwH/RrfENK2cNWak2Yh/Xc.m5qhosly",
     "createdAt": "2025-11-12T01:04:12.535Z"
+  },
+  {
+    "id": "6913e29a869a5c05185ebf99",
+    "nombre": "Leonardo",
+    "apellido": "Mendez",
+    "email": "leo@gmail.com",
+    "password": "$2a$10$TBC7E7Wi5QD.Zw3FRz4V4ud.KrtOX08almZgsWK53EAyB.TWVb42C",
+    "createdAt": "2025-11-12T01:27:54.406Z"
+  },
+  {
+    "id": "6913f8361bafc531321231a8",
+    "nombre": "Leonardo",
+    "apellido": "Mendez",
+    "email": "le@gmail.com",
+    "telefono": "4651084499",
+    "password": "$2a$10$fbGd5Q4jOSU8UDNxDCdiQ.HT.3A6ZPKPp21zklVroQ.cWOH98VhCK",
+    "createdAt": "2025-11-12T03:00:06.576Z"
+  },
+  {
+    "id": "691513f89248a2a764108e6e",
+    "nombre": "Giovanni",
+    "apellido": "Jacobo",
+    "email": "j@gmail.com",
+    "telefono": "4651084499",
+    "password": "$2a$10$vbRvAWAzfKAdkUlhnUz2c.jnQWR0NNj7CpOICVUtkEdPEGMRBfqpq",
+    "createdAt": "2025-11-12T23:10:48.488Z"
+  },
+  {
+    "id": "691517911feccfaac6a2f889",
+    "nombre": "Pedro",
+    "apellido": "permanganito",
+    "email": "prueba1@prueba.com",
+    "telefono": "4651237892",
+    "password": "$2a$10$p0WnFu9vBT7UdI7D.Rtlj.sh4DepCelY38laIkONjZtP/uKuMMIMW",
+    "createdAt": "2025-11-12T23:26:09.857Z"
   }
 ]
