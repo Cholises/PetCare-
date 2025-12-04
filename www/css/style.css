@@ -13,6 +13,16 @@
   --font-main: 'Poppins', sans-serif;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -22,6 +32,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 /* Encabezados y estructura */
@@ -32,11 +43,25 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 h1, h2, h3 {
   font-weight: 600;
   margin: 0;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+}
+
+h2 {
+  font-size: clamp(1.3rem, 4vw, 2rem);
+}
+
+h3 {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
 }
 
 /* Botón general */
@@ -48,6 +73,7 @@ button {
   cursor: pointer;
   font-weight: 500;
   transition: 0.3s ease;
+  font-size: clamp(0.875rem, 2vw, 1rem);
 }
 
 /* Botones principales */
@@ -59,6 +85,11 @@ button {
 
 .btn-primary:hover {
   background-color: #693ea5;
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 /* Botones secundarios */
@@ -69,12 +100,18 @@ button {
 
 .btn-secondary:hover {
   opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
 }
 
 /* Contenido general */
 .content {
-  padding: 25px;
+  padding: clamp(15px, 5vw, 25px);
   flex: 1;
+  overflow-y: auto;
 }
 
 /* Tarjetas base */
@@ -82,7 +119,7 @@ button {
   background: white;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 20px;
+  padding: clamp(15px, 4vw, 20px);
   margin-bottom: 15px;
 }
 
@@ -91,27 +128,167 @@ button {
   background: transparent;
   border: none;
   color: white;
-  font-size: 22px;
+  font-size: clamp(18px, 5vw, 24px);
   margin-right: 10px;
   cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .back-btn:hover {
   opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.back-btn:active {
+  transform: scale(0.95);
 }
 
 /* Texto */
 p {
   line-height: 1.6;
   margin-top: 10px;
+  font-size: clamp(0.875rem, 2vw, 1rem);
 }
 
 /* Links */
 a {
   color: var(--primary-purple);
   text-decoration: none;
+  transition: 0.3s ease;
 }
 
 a:hover {
   text-decoration: underline;
+  opacity: 0.8;
+}
+
+/* Responsive Media Queries */
+
+/* Extra Small (XS): 320px - 374px */
+@media (max-width: 374px) {
+  html {
+    font-size: 14px;
+  }
+
+  header {
+    padding: 12px 15px;
+  }
+
+  .content {
+    padding: 15px;
+  }
+
+  .card {
+    padding: 15px;
+    margin-bottom: 12px;
+  }
+
+  button {
+    padding: 8px 16px;
+  }
+}
+
+/* Small (SM): 375px - 480px */
+@media (min-width: 375px) and (max-width: 480px) {
+  html {
+    font-size: 15px;
+  }
+
+  header {
+    padding: 13px 18px;
+  }
+
+  .content {
+    padding: 18px;
+  }
+
+  .card {
+    padding: 16px;
+    margin-bottom: 13px;
+  }
+
+  button {
+    padding: 9px 18px;
+  }
+}
+
+/* Medium (MD): 481px - 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+
+  header {
+    padding: 15px 20px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  .card {
+    padding: 18px;
+    margin-bottom: 15px;
+  }
+
+  button {
+    padding: 10px 20px;
+  }
+}
+
+/* Large (LG): 769px - 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+  html {
+    font-size: 17px;
+  }
+
+  header {
+    padding: 16px 24px;
+  }
+
+  .content {
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .card {
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  button {
+    padding: 11px 22px;
+  }
+}
+
+/* Extra Large (XL): 1025px + */
+@media (min-width: 1025px) {
+  html {
+    font-size: 18px;
+  }
+
+  header {
+    padding: 18px 28px;
+  }
+
+  .content {
+    padding: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .card {
+    padding: 22px;
+    margin-bottom: 18px;
+  }
+
+  button {
+    padding: 12px 24px;
+  }
 }

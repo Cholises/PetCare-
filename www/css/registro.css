@@ -2,14 +2,20 @@
    CSS exclusivo de registro
    =============================== */
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 /* Contenedor más ancho para registro */
 .register-container {
-    max-width: 520px;
+    max-width: clamp(300px, 90vw, 520px);
 }
 
 /* Ajustes visuales ligeros */
 .logo-section {
-    margin-bottom: 18px;
+    margin-bottom: clamp(14px, 4vw, 18px);
 }
 
 /* --- Fuerza de Contraseña (Barra + Texto estilo Gmail) --- */
@@ -42,7 +48,7 @@
 }
 
 .pass-text {
-    font-size: 13px;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
     color: #6B7280; /* gris sutil */
     margin-top: 4px;
     height: 16px;
@@ -73,9 +79,40 @@
     content: "";
 }
 
-/* Mobile */
-@media (max-width: 480px) {
+/* Responsive Design */
+
+@media (max-width: 374px) {
+    .register-container {
+        padding: 0 12px;
+    }
+}
+
+@media (min-width: 375px) and (max-width: 480px) {
     .register-container {
         padding: 0 14px;
+    }
+
+    .logo-section {
+        margin-bottom: 16px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .register-container {
+        padding: 0 20px;
+    }
+
+    .logo-section {
+        margin-bottom: 20px;
+    }
+}
+
+@media (min-width: 769px) {
+    .register-container {
+        padding: 0 30px;
+    }
+
+    .logo-section {
+        margin-bottom: 24px;
     }
 }

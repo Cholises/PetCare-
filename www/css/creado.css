@@ -2,6 +2,21 @@
    Pantalla: Cuenta creada con éxito
    =============================== */
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --white: #FFFFFF;
+    --primary-green: #10B981;
+    --text-dark: #1F2937;
+    --text-gray: #6B7280;
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
 body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
@@ -9,12 +24,13 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow: hidden;
-    padding: 20px;
+    padding: clamp(16px, 5vw, 20px);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .created-container {
     width: 100%;
-    max-width: 480px;
+    max-width: clamp(300px, 90vw, 480px);
     position: relative;
     z-index: 2;
     animation: fadeInUp 0.7s ease;
@@ -22,18 +38,18 @@ body {
 
 .content-box {
     background: var(--white);
-    padding: 38px 28px;
-    border-radius: 26px;
+    padding: clamp(24px, 6vw, 38px);
+    border-radius: clamp(20px, 5vw, 26px);
     text-align: center;
     box-shadow: var(--shadow-xl);
 }
 
 .icon-box {
-    width: 85px;
-    height: 85px;
+    width: clamp(65px, 20vw, 85px);
+    height: clamp(65px, 20vw, 85px);
     background: var(--white);
     border-radius: 50%;
-    margin: 0 auto 18px;
+    margin: 0 auto clamp(14px, 4vw, 18px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,29 +58,31 @@ body {
 }
 
 .icon-box i {
-    font-size: 48px;
+    font-size: clamp(28px, 8vw, 48px);
     color: var(--primary-green);
 }
 
 h2 {
-    font-size: 26px;
+    font-size: clamp(1.5rem, 5vw, 1.8rem);
     font-weight: 700;
     color: var(--text-dark);
     margin-bottom: 10px;
 }
 
 .subtitle {
-    font-size: 15px;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
     color: var(--text-gray);
-    margin-bottom: 26px;
+    margin-bottom: clamp(18px, 4vw, 26px);
+    line-height: 1.5;
 }
 
 /* Botón */
 #goToMenuBtn {
     width: 100%;
-    font-size: 16px;
+    font-size: clamp(0.9rem, 2vw, 1rem);
     border-radius: 14px;
     gap: 8px;
+    padding: clamp(10px, 2vw, 12px) clamp(16px, 3vw, 20px);
 }
 
 /* Confetti canvas */
@@ -87,5 +105,143 @@ h2 {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+
+@media (max-width: 374px) {
+    body {
+        padding: 12px;
+    }
+
+    .created-container {
+        max-width: 100%;
+    }
+
+    .content-box {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 12px;
+    }
+
+    .icon-box i {
+        font-size: 28px;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 16px;
+    }
+}
+
+@media (min-width: 375px) and (max-width: 480px) {
+    body {
+        padding: 14px;
+    }
+
+    .created-container {
+        max-width: 95%;
+    }
+
+    .content-box {
+        padding: 24px 20px;
+        border-radius: 20px;
+    }
+
+    .icon-box {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 14px;
+    }
+
+    .icon-box i {
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    body {
+        padding: 18px;
+    }
+
+    .created-container {
+        max-width: 500px;
+    }
+
+    .content-box {
+        padding: 32px 24px;
+        border-radius: 24px;
+    }
+
+    .icon-box {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 16px;
+    }
+
+    .icon-box i {
+        font-size: 44px;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        margin-bottom: 24px;
+    }
+}
+
+@media (min-width: 769px) {
+    body {
+        padding: 20px;
+    }
+
+    .created-container {
+        max-width: 520px;
+    }
+
+    .content-box {
+        padding: 38px 28px;
+        border-radius: 26px;
+    }
+
+    .icon-box {
+        width: 85px;
+        height: 85px;
+        margin: 0 auto 18px;
+    }
+
+    .icon-box i {
+        font-size: 48px;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 26px;
     }
 }

@@ -440,30 +440,456 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 480px) {
+
+/* Extra Small (XS): 320px - 374px */
+@media (max-width: 374px) {
     .login-container {
         max-width: 100%;
+        padding: 20px 12px;
     }
 
-    .login-card {
-        padding: 30px 20px;
-        border-radius: 20px;
+    .logo-section {
+        margin-bottom: 20px;
+    }
+
+    .logo-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 12px;
+    }
+
+    .logo-icon i {
+        font-size: 30px;
     }
 
     .app-name {
-        font-size: 32px;
+        font-size: 26px;
+    }
+
+    .app-tagline {
+        font-size: 13px;
+    }
+
+    .login-card {
+        padding: 20px 16px;
+        border-radius: 18px;
+    }
+
+    .card-header h2 {
+        font-size: 20px;
+    }
+
+    .card-header p {
+        font-size: 13px;
+    }
+
+    .input-group input {
+        padding: 12px 40px 12px 40px;
+        font-size: 14px;
+        border-radius: 12px;
+    }
+
+    .input-icon {
+        font-size: 16px;
+        left: 14px;
+    }
+
+    .toggle-password {
+        font-size: 16px;
+        right: 14px;
+    }
+
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .label-text {
+        font-size: 12px;
+    }
+
+    .forgot-password {
+        font-size: 12px;
+    }
+
+    .btn-login {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .social-login {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-social {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .btn-social span {
+        display: none;
+    }
+
+    .signup-link p,
+    .signup-link a {
+        font-size: 13px;
+    }
+
+    .login-footer p {
+        font-size: 11px;
+    }
+}
+
+/* Small (SM): 375px - 480px */
+@media (min-width: 375px) and (max-width: 480px) {
+    .login-container {
+        max-width: 100%;
+        padding: 25px 16px;
+    }
+
+    .logo-section {
+        margin-bottom: 24px;
+    }
+
+    .logo-icon {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 14px;
+    }
+
+    .logo-icon i {
+        font-size: 35px;
+    }
+
+    .app-name {
+        font-size: 30px;
+    }
+
+    .app-tagline {
+        font-size: 14px;
+    }
+
+    .login-card {
+        padding: 25px 20px;
+        border-radius: 20px;
     }
 
     .card-header h2 {
         font-size: 24px;
     }
 
+    .card-header p {
+        font-size: 14px;
+    }
+
+    .input-group input {
+        padding: 14px 45px 14px 45px;
+        font-size: 15px;
+        border-radius: 14px;
+    }
+
+    .input-icon {
+        font-size: 17px;
+        left: 16px;
+    }
+
+    .toggle-password {
+        font-size: 17px;
+        right: 16px;
+    }
+
+    .form-options {
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .label-text {
+        font-size: 13px;
+    }
+
+    .forgot-password {
+        font-size: 13px;
+    }
+
+    .btn-login {
+        padding: 14px;
+        font-size: 15px;
+    }
+
     .social-login {
         flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-social {
+        padding: 13px;
+        font-size: 14px;
     }
 
     .btn-social span {
         display: none;
+    }
+
+    .signup-link p,
+    .signup-link a {
+        font-size: 14px;
+    }
+
+    .login-footer p {
+        font-size: 12px;
+    }
+}
+
+/* Medium (MD): 481px - 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+    .login-container {
+        max-width: 500px;
+        padding: 35px 24px;
+    }
+
+    .logo-section {
+        margin-bottom: 28px;
+    }
+
+    .logo-icon {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 16px;
+    }
+
+    .logo-icon i {
+        font-size: 40px;
+    }
+
+    .app-name {
+        font-size: 34px;
+    }
+
+    .app-tagline {
+        font-size: 15px;
+    }
+
+    .login-card {
+        padding: 32px 28px;
+        border-radius: 22px;
+    }
+
+    .card-header h2 {
+        font-size: 26px;
+    }
+
+    .card-header p {
+        font-size: 15px;
+    }
+
+    .input-group input {
+        padding: 15px 48px 15px 48px;
+        font-size: 15px;
+        border-radius: 15px;
+    }
+
+    .form-options {
+        margin-bottom: 22px;
+    }
+
+    .label-text,
+    .forgot-password {
+        font-size: 14px;
+    }
+
+    .btn-login {
+        padding: 15px;
+        font-size: 16px;
+    }
+
+    .social-login {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .btn-social {
+        padding: 14px;
+        font-size: 15px;
+    }
+
+    .btn-social span {
+        display: inline;
+    }
+
+    .signup-link p,
+    .signup-link a {
+        font-size: 14px;
+    }
+
+    .login-footer p {
+        font-size: 13px;
+    }
+}
+
+/* Large (LG): 769px - 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .login-container {
+        max-width: 550px;
+        padding: 40px 28px;
+    }
+
+    .logo-section {
+        margin-bottom: 32px;
+    }
+
+    .logo-icon {
+        width: 85px;
+        height: 85px;
+        margin-bottom: 18px;
+    }
+
+    .logo-icon i {
+        font-size: 42px;
+    }
+
+    .app-name {
+        font-size: 36px;
+    }
+
+    .app-tagline {
+        font-size: 16px;
+    }
+
+    .login-card {
+        padding: 36px 32px;
+        border-radius: 24px;
+    }
+
+    .card-header h2 {
+        font-size: 28px;
+    }
+
+    .card-header p {
+        font-size: 16px;
+    }
+
+    .input-group input {
+        padding: 16px 50px 16px 50px;
+        font-size: 16px;
+        border-radius: 16px;
+    }
+
+    .form-options {
+        margin-bottom: 24px;
+    }
+
+    .label-text,
+    .forgot-password {
+        font-size: 15px;
+    }
+
+    .btn-login {
+        padding: 16px;
+        font-size: 16px;
+    }
+
+    .social-login {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .btn-social {
+        padding: 15px;
+        font-size: 15px;
+    }
+
+    .signup-link p,
+    .signup-link a {
+        font-size: 15px;
+    }
+
+    .login-footer p {
+        font-size: 13px;
+    }
+}
+
+/* Extra Large (XL): 1025px + */
+@media (min-width: 1025px) {
+    .login-container {
+        max-width: 600px;
+        padding: 60px 40px;
+    }
+
+    .logo-section {
+        margin-bottom: 35px;
+    }
+
+    .logo-icon {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 20px;
+    }
+
+    .logo-icon i {
+        font-size: 45px;
+    }
+
+    .app-name {
+        font-size: 40px;
+    }
+
+    .app-tagline {
+        font-size: 17px;
+    }
+
+    .login-card {
+        padding: 40px 36px;
+        border-radius: 25px;
+    }
+
+    .card-header h2 {
+        font-size: 30px;
+    }
+
+    .card-header p {
+        font-size: 17px;
+    }
+
+    .input-group input {
+        padding: 16px 50px 16px 50px;
+        font-size: 16px;
+        border-radius: 16px;
+    }
+
+    .form-options {
+        margin-bottom: 24px;
+    }
+
+    .label-text,
+    .forgot-password {
+        font-size: 15px;
+    }
+
+    .btn-login {
+        padding: 16px;
+        font-size: 16px;
+    }
+
+    .social-login {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .btn-social {
+        padding: 15px;
+        font-size: 15px;
+    }
+
+    .signup-link p,
+    .signup-link a {
+        font-size: 15px;
+    }
+
+    .login-footer p {
+        font-size: 13px;
     }
 }
 
