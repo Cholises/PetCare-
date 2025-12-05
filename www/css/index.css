@@ -63,6 +63,12 @@ body {
     flex: 1;
     position: relative;
     overflow: hidden;
+    cursor: grab;
+    user-select: none;
+}
+
+.slides-wrapper:active {
+    cursor: grabbing;
 }
 
 .slide {

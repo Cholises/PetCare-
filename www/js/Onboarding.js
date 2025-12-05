@@ -41,29 +41,69 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Funcionalidad táctil (swipe)
+    // Funcionalidad táctil (swipe) y mouse drag
     let touchStartX = 0;
     let touchEndX = 0;
+    let isMouseDown = false;
     const slidesWrapper = document.querySelector('.slides-wrapper');
+    const SWIPE_THRESHOLD = 50; // Mínimo de pixels para considerar un swipe
 
+    // Eventos táctiles
     slidesWrapper.addEventListener('touchstart', function(e) {
-        touchStartX = e.changedTouches[0].screenX;
-    });
+        touchStartX = e.touches[0].clientX;
+    }, false);
+
+    slidesWrapper.addEventListener('touchmove', function(e) {
+        // Evitar que la página se desplace
+        if (Math.abs(e.touches[0].clientX - touchStartX) > 10) {
+            e.preventDefault();
+        }
+    }, false);
 
     slidesWrapper.addEventListener('touchend', function(e) {
-        touchEndX = e.changedTouches[0].screenX;
+        touchEndX = e.changedTouches[0].clientX;
         handleSwipe();
-    });
+    }, false);
+
+    // Eventos de mouse (para escritorio)
+    slidesWrapper.addEventListener('mousedown', function(e) {
+        isMouseDown = true;
+        touchStartX = e.clientX;
+    }, false);
+
+    slidesWrapper.addEventListener('mousemove', function(e) {
+        if (!isMouseDown) return;
+        touchEndX = e.clientX;
+    }, false);
+
+    slidesWrapper.addEventListener('mouseup', function(e) {
+        if (!isMouseDown) return;
+        isMouseDown = false;
+        touchEndX = e.clientX;
+        handleSwipe();
+    }, false);
+
+    slidesWrapper.addEventListener('mouseleave', function(e) {
+        isMouseDown = false;
+    }, false);
 
     function handleSwipe() {
-        if (touchEndX < touchStartX - 50 && currentSlide < totalSlides - 1) {
+        const difference = touchStartX - touchEndX;
+        
+        // Swipe hacia la izquierda (siguiente diapositiva)
+        if (difference > SWIPE_THRESHOLD && currentSlide < totalSlides - 1) {
             currentSlide++;
             showSlide(currentSlide);
         }
-        if (touchEndX > touchStartX + 50 && currentSlide > 0) {
+        // Swipe hacia la derecha (diapositiva anterior)
+        else if (difference < -SWIPE_THRESHOLD && currentSlide > 0) {
             currentSlide--;
             showSlide(currentSlide);
         }
+        
+        // Resetear valores
+        touchStartX = 0;
+        touchEndX = 0;
     }
 
     function showSlide(index) {
