@@ -1,3 +1,4 @@
+
 // js/vacunas.js - Sistema de control de vacunas
 
 document.addEventListener("DOMContentLoaded", () => {

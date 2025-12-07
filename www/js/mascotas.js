@@ -1,4 +1,5 @@
 /*document.addEventListener("DOMContentLoaded", () => {
+
   const addBtn = document.getElementById("quickAddBtn");
   const emptyStateBtn = document.getElementById("emptyStateBtn");
   const modal = document.getElementById("addPetModal");
@@ -52,4 +53,5 @@
     form.reset();
     modal.classList.add("hidden");
   });
+<<<<<<< HEAD
 });*/

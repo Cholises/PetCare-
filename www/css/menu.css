@@ -32,6 +32,10 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: var(--bg-light);
     min-height: 100vh;
+<<<<<<< HEAD
+=======
+    overflow: hidden;
+>>>>>>> ea26268efb3a189a6386d552c26d066151d7a14c
     color: #333;
     padding-bottom: 80px;
 }
@@ -589,6 +593,7 @@ body {
     .nav-item i {
         font-size: 20px;
     }
+<<<<<<< HEAD
 }
 
 /* ==========================================
@@ -1209,4 +1214,6 @@ body {
     left: 20px;
     right: 20px;
   }
+=======
+>>>>>>> ea26268efb3a189a6386d552c26d066151d7a14c
 }
