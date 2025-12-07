@@ -1,0 +1,1176 @@
+/* ========================================
+   SISTEMA DE CITAS VETERINARIAS - PETCARE+
+   Estilos CSS Completos
+   ======================================== */
+
+/* Reset y Variables Globales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Colores Principales */
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --primary-light: #a78bfa;
+    --secondary: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    
+    /* Fondos */
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    
+    /* Textos */
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    
+    /* Bordes y Sombras */
+    --border: #e5e7eb;
+    --shadow: rgba(0, 0, 0, 0.1);
+    
+    /* Gradientes */
+    --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #10b981, #059669);
+    --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+    --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding-bottom: 80px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+.header {
+    background: var(--gradient);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px var(--shadow);
+}
+
+.header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.back-btn, 
+.filter-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.back-btn:hover, 
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.back-btn:active,
+.filter-btn:active {
+    transform: scale(0.95);
+}
+
+/* ========================================
+   ESTADÍSTICAS
+   ======================================== */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 20px;
+    background: white;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 8px;
+    border-radius: 12px;
+    background: var(--bg-primary);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    font-size: 20px;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon.pending {
+    background: var(--gradient-warning);
+}
+
+.stat-icon.completed {
+    background: var(--gradient-success);
+}
+
+.stat-icon.upcoming {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* ========================================
+   CALENDARIO
+   ======================================== */
+.calendar-section {
+    background: white;
+    padding: 20px;
+    margin: 0 20px 16px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.calendar-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.calendar-nav {
+    background: var(--bg-primary);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.calendar-nav:hover {
+    background: var(--primary-light);
+    color: white;
+    transform: scale(1.05);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: 500;
+}
+
+.calendar-day.header {
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: default;
+    font-size: 12px;
+}
+
+.calendar-day.inactive {
+    color: var(--text-secondary);
+    opacity: 0.4;
+}
+
+.calendar-day:not(.header):not(.inactive):hover {
+    background: var(--bg-primary);
+    transform: scale(1.05);
+}
+
+.calendar-day.today {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.calendar-day.has-appointment::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--secondary);
+}
+
+.calendar-day.today.has-appointment::after {
+    background: white;
+}
+
+/* ========================================
+   FILTROS
+   ======================================== */
+.filter-section {
+    padding: 0 20px 16px;
+}
+
+.filter-chips {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+}
+
+.filter-chips::-webkit-scrollbar {
+    height: 4px;
+}
+
+.filter-chips::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+    border-radius: 2px;
+}
+
+.filter-chips::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+}
+
+.filter-chips::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+.filter-chip {
+    background: white;
+    border: 2px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.filter-chip:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.filter-chip.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.chip-count {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.filter-chip.active .chip-count {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.pet-filter {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.pet-filter:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* ========================================
+   LISTA DE CITAS
+   ======================================== */
+.appointments-section {
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.appointments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.appointment-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px var(--shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--primary);
+}
+
+.appointment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px var(--shadow);
+}
+
+.appointment-card.pendiente {
+    border-left-color: var(--warning);
+}
+
+.appointment-card.completada {
+    border-left-color: var(--secondary);
+    opacity: 0.85;
+}
+
+.appointment-card.cancelada {
+    border-left-color: var(--danger);
+    opacity: 0.7;
+}
+
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.appointment-pet {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.pet-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+}
+
+.pet-avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pet-info h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.pet-info p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.appointment-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.appointment-status.pendiente {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.appointment-status.completada {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+}
+
+.appointment-status.cancelada {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.appointment-body {
+    margin-bottom: 12px;
+}
+
+.appointment-datetime {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text-primary);
+    flex-wrap: wrap;
+}
+
+.appointment-datetime i {
+    color: var(--primary);
+    width: 16px;
+}
+
+.appointment-location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.appointment-location i {
+    color: var(--primary);
+    width: 16px;
+}
+
+.appointment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    gap: 12px;
+}
+
+.appointment-type {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    flex: 1;
+}
+
+.type-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--bg-primary);
+}
+
+.appointment-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.action-btn.complete {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+}
+
+.action-btn.edit {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--info);
+}
+
+.action-btn.delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+/* ========================================
+   ESTADO VACÍO
+   ======================================== */
+.empty-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-state.show {
+    display: flex;
+}
+
+.empty-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 48px;
+    color: var(--text-secondary);
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    max-width: 300px;
+}
+
+/* ========================================
+   BOTÓN FLOTANTE (FAB)
+   ======================================== */
+.fab {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--gradient);
+    color: white;
+    border: none;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fab:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+}
+
+.fab:active {
+    transform: scale(0.95);
+}
+
+/* ========================================
+   MODAL
+   ======================================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+    }
+    to { 
+        opacity: 1; 
+    }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: var(--bg-primary);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.modal-close:hover {
+    background: var(--danger);
+    color: white;
+    transform: scale(1.05);
+}
+
+/* ========================================
+   FORMULARIO
+   ======================================== */
+form {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.form-group label i {
+    color: var(--primary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.reminder-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 12px;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.checkbox-label:hover {
+    background: rgba(124, 58, 237, 0.05);
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-primary,
+.btn-secondary {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--gradient);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--border);
+}
+
+/* ========================================
+   DETALLES DE CITA
+   ======================================== */
+.appointment-details {
+    padding: 20px;
+}
+
+.detail-section {
+    margin-bottom: 24px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.detail-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.detail-content {
+    flex: 1;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.details-actions {
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+}
+
+.btn-icon {
+    flex: 1;
+    padding: 14px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-icon:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(124, 58, 237, 0.05);
+}
+
+.btn-icon.danger:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+/* ========================================
+   NAVEGACIÓN INFERIOR
+   ======================================== */
+/* ===== NAVEGACIÓN INFERIOR CON BOTÓN CENTRAL ===== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: white;
+    padding: 0.5rem 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    height: 70px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+    flex: 1;
+    padding: 0.5rem 0;
+}
+
+.nav-item i {
+    font-size: 1.25rem;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    color: #7c3aed;
+}
+
+/* BOTÓN CENTRAL DE AGREGAR */
+.nav-item-center {
+    position: relative;
+    margin-top: -30px; /* Lo eleva sobre el nav */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.add-btn-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    border: 4px solid white; /* Borde blanco para destacar */
+}
+
+.nav-item-center:hover .add-btn-circle {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.nav-item-center:active .add-btn-circle {
+    transform: scale(0.95) rotate(90deg);
+}
+
+/* ELIMINAR el botón flotante anterior */
+.fab {
+    display: none !important;
+}
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+/* Móviles pequeños */
+@media (max-width: 380px) {
+    .header h1 {
+        font-size: 18px;
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .stat-card {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        padding: 12px;
+    }
+    
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        margin-bottom: 0;
+    }
+    
+    .stat-info {
+        align-items: flex-start;
+    }
+    
+    .calendar-section {
+        margin: 0 12px 16px;
+        padding: 16px;
+    }
+    
+    .filter-section,
+    .appointments-section {
+        padding: 0 12px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .fab {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+    }
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+    body {
+        max-width: 768px;
+        margin: 0 auto;
+        box-shadow: 0 0 20px var(--shadow);
+    }
+    
+    .header,
+    .bottom-nav {
+        max-width: 768px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+/* Desktops */
+@media (min-width: 1024px) {
+    .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .appointments-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+}
+
+/* ========================================
+   SCROLLBAR PERSONALIZADO
+   ======================================== */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* ========================================
+   ANIMACIONES ADICIONALES
+   ======================================== */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.fab:hover {
+    animation: pulse 1s infinite;
+}
+
+/* ========================================
+   MODO IMPRESIÓN
+   ======================================== */
+@media print {
+    .header,
+    .bottom-nav,
+    .fab,
+    .filter-section {
+        display: none;
+    }
+    
+    .appointment-card {
+        page-break-inside: avoid;
+    }
+}

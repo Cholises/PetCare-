@@ -1,0 +1,738 @@
+// js/citas.js - Sistema de Citas Veterinarias (Compatible con menu.js)
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('📅 Inicializando sistema de citas...');
+    
+    // ===== VERIFICAR SESIÓN =====
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        console.warn('⚠️ No hay usuario logueado');
+        alert('⚠️ Debes iniciar sesión primero');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    console.log('✅ Usuario logueado:', currentUser.nombre);
+    
+    // ===== VARIABLES GLOBALES =====
+    let citas = [];
+    let mascotas = [];
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let editingAppointmentId = null;
+    let currentFilter = 'all';
+    let currentPetFilter = 'all';
+    
+    // ===== ELEMENTOS DEL DOM =====
+    const modal = document.getElementById('appointmentModal');
+    const detailsModal = document.getElementById('detailsModal');
+    const appointmentForm = document.getElementById('appointmentForm');
+    const appointmentsList = document.getElementById('appointmentsList');
+    const calendarGrid = document.getElementById('calendarGrid');
+    const emptyState = document.getElementById('emptyState');
+    
+    // ===== CARGAR DATOS =====
+    function loadData() {
+        // Cargar todas las mascotas
+        const todasMascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
+        // Filtrar solo las del usuario actual
+        mascotas = todasMascotas.filter(m => m.dueño === currentUser.correo);
+        
+        console.log(`🐾 Mascotas del usuario: ${mascotas.length}`);
+        
+        // Cargar todas las citas
+        const todasCitas = JSON.parse(localStorage.getItem('citas') || '[]');
+        // Filtrar solo las citas de las mascotas del usuario
+        const mascotasIds = mascotas.map(m => m.id);
+        citas = todasCitas.filter(c => mascotasIds.includes(c.mascotaId));
+        
+        console.log(`📅 Citas del usuario: ${citas.length}`);
+        
+        // Si no hay mascotas, mostrar advertencia
+        if (mascotas.length === 0) {
+            console.warn('⚠️ No hay mascotas registradas');
+        }
+    }
+    
+    // ===== GUARDAR CITAS =====
+    function saveCitas() {
+        const todasCitas = JSON.parse(localStorage.getItem('citas') || '[]');
+        // Actualizar solo las citas del usuario actual
+        const mascotasIds = mascotas.map(m => m.id);
+        const citasOtrosUsuarios = todasCitas.filter(c => !mascotasIds.includes(c.mascotaId));
+        const nuevasCitas = [...citasOtrosUsuarios, ...citas];
+        localStorage.setItem('citas', JSON.stringify(nuevasCitas));
+    }
+    
+    // ===== INICIALIZAR =====
+    function init() {
+        loadData();
+        renderCalendar();
+        renderAppointments();
+        updateStats();
+        loadPetFilters();
+        setupEventListeners();
+    }
+    
+    // ===== EVENT LISTENERS =====
+    function setupEventListeners() {
+        // Botón agregar cita
+        const addBtn = document.getElementById('addAppointmentBtn');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => openModal());
+        }
+        
+        // Cerrar modal
+        const closeBtn = document.getElementById('closeModal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+        
+        // Cancelar
+        const cancelBtn = document.getElementById('cancelBtn');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', closeModal);
+        }
+        
+        // Click fuera del modal
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        }
+        
+        // Formulario
+        if (appointmentForm) {
+            appointmentForm.addEventListener('submit', handleSubmit);
+        }
+        
+        // Calendario
+        const prevBtn = document.getElementById('prevMonth');
+        const nextBtn = document.getElementById('nextMonth');
+        if (prevBtn) prevBtn.addEventListener('click', () => changeMonth(-1));
+        if (nextBtn) nextBtn.addEventListener('click', () => changeMonth(1));
+        
+        // Filtros
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                renderAppointments();
+            });
+        });
+        
+        const petFilter = document.getElementById('petFilter');
+        if (petFilter) {
+            petFilter.addEventListener('change', (e) => {
+                currentPetFilter = e.target.value;
+                renderAppointments();
+            });
+        }
+        
+        // Cerrar modal de detalles
+        const closeDetailsBtn = document.getElementById('closeDetailsModal');
+        if (closeDetailsBtn) {
+            closeDetailsBtn.addEventListener('click', closeDetailsModal);
+        }
+        
+        if (detailsModal) {
+            detailsModal.addEventListener('click', (e) => {
+                if (e.target === detailsModal) closeDetailsModal();
+            });
+        }
+    }
+    
+    // ===== MODAL =====
+    function openModal(citaId = null) {
+        if (!modal) return;
+        
+        // Verificar si hay mascotas
+        if (mascotas.length === 0) {
+            showNotification('⚠️ Primero debes registrar una mascota en el menú principal', 'warning');
+            return;
+        }
+        
+        const modalTitle = document.getElementById('modalTitle');
+        
+        if (citaId) {
+            // Modo edición
+            editingAppointmentId = citaId;
+            loadAppointmentData(citaId);
+            if (modalTitle) modalTitle.textContent = 'Editar Cita';
+        } else {
+            // Modo creación
+            editingAppointmentId = null;
+            if (appointmentForm) appointmentForm.reset();
+            if (modalTitle) modalTitle.textContent = 'Nueva Cita';
+            
+            // Fecha mínima: hoy
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('appointmentDate');
+            if (dateInput) {
+                dateInput.min = today;
+                dateInput.value = today;
+            }
+        }
+        
+        loadPetSelect();
+        modal.classList.add('show');
+    }
+    
+    function closeModal() {
+        if (!modal) return;
+        modal.classList.remove('show');
+        if (appointmentForm) appointmentForm.reset();
+        editingAppointmentId = null;
+    }
+    
+    function closeDetailsModal() {
+        if (!detailsModal) return;
+        detailsModal.classList.remove('show');
+    }
+    
+    // ===== CARGAR SELECT DE MASCOTAS =====
+    function loadPetSelect() {
+        const petSelect = document.getElementById('petSelect');
+        if (!petSelect) return;
+        
+        petSelect.innerHTML = '<option value="">Selecciona una mascota</option>';
+        
+        mascotas.forEach(mascota => {
+            const option = document.createElement('option');
+            option.value = mascota.id;
+            option.textContent = `${mascota.nombre} (${mascota.tipo})`;
+            petSelect.appendChild(option);
+        });
+    }
+    
+    // ===== CARGAR FILTROS DE MASCOTAS =====
+    function loadPetFilters() {
+        const petFilter = document.getElementById('petFilter');
+        if (!petFilter) return;
+        
+        petFilter.innerHTML = '<option value="all">Todas las mascotas</option>';
+        
+        mascotas.forEach(mascota => {
+            const option = document.createElement('option');
+            option.value = mascota.id;
+            option.textContent = mascota.nombre;
+            petFilter.appendChild(option);
+        });
+    }
+    
+    // ===== GUARDAR/ACTUALIZAR CITA =====
+    function handleSubmit(e) {
+        e.preventDefault();
+        
+        const mascotaId = document.getElementById('petSelect').value;
+        const fecha = document.getElementById('appointmentDate').value;
+        const hora = document.getElementById('appointmentTime').value;
+        const veterinaria = document.getElementById('veterinary').value.trim();
+        const tipo = document.getElementById('appointmentType').value;
+        const motivo = document.getElementById('reason').value.trim();
+        const notas = document.getElementById('notes').value.trim();
+        const recordatorio1dia = document.getElementById('reminder1day').checked;
+        const recordatorio1hora = document.getElementById('reminder1hour').checked;
+        
+        // Validaciones
+        if (!mascotaId) {
+            showNotification('⚠️ Selecciona una mascota', 'error');
+            return;
+        }
+        
+        if (!fecha || !hora) {
+            showNotification('⚠️ Completa la fecha y hora', 'error');
+            return;
+        }
+        
+        if (!veterinaria) {
+            showNotification('⚠️ Ingresa la veterinaria', 'error');
+            return;
+        }
+        
+        if (!tipo) {
+            showNotification('⚠️ Selecciona el tipo de cita', 'error');
+            return;
+        }
+        
+        // Obtener datos de la mascota
+        const mascota = mascotas.find(m => m.id === mascotaId);
+        if (!mascota) {
+            showNotification('⚠️ Mascota no encontrada', 'error');
+            return;
+        }
+        
+        const citaData = {
+            mascotaId: mascotaId,
+            nombreMascota: mascota.nombre,
+            fotoMascota: mascota.foto,
+            fecha: fecha,
+            hora: hora,
+            veterinaria: veterinaria,
+            tipo: tipo,
+            motivo: motivo,
+            notas: notas,
+            recordatorio1dia: recordatorio1dia,
+            recordatorio1hora: recordatorio1hora,
+            estado: 'pendiente'
+        };
+        
+        if (editingAppointmentId) {
+            updateAppointment(editingAppointmentId, citaData);
+        } else {
+            createAppointment(citaData);
+        }
+    }
+    
+    // ===== CREAR CITA =====
+    function createAppointment(citaData) {
+        const nuevaCita = {
+            id: 'cita_' + Date.now(),
+            ...citaData,
+            creado: new Date().toISOString()
+        };
+        
+        citas.push(nuevaCita);
+        saveCitas();
+        
+        console.log('✅ Cita creada:', nuevaCita);
+        showNotification(`🎉 Cita agendada para ${citaData.nombreMascota}`, 'success');
+        
+        closeModal();
+        renderAppointments();
+        renderCalendar();
+        updateStats();
+    }
+    
+    // ===== ACTUALIZAR CITA =====
+    function updateAppointment(citaId, citaData) {
+        const index = citas.findIndex(c => c.id === citaId);
+        if (index === -1) {
+            showNotification('⚠️ Cita no encontrada', 'error');
+            return;
+        }
+        
+        citas[index] = {
+            ...citas[index],
+            ...citaData,
+            actualizado: new Date().toISOString()
+        };
+        
+        saveCitas();
+        console.log('✅ Cita actualizada:', citas[index]);
+        showNotification('✅ Cita actualizada correctamente', 'success');
+        
+        closeModal();
+        renderAppointments();
+        renderCalendar();
+        updateStats();
+    }
+    
+    // ===== CARGAR DATOS PARA EDITAR =====
+    function loadAppointmentData(citaId) {
+        const cita = citas.find(c => c.id === citaId);
+        if (!cita) return;
+        
+        document.getElementById('petSelect').value = cita.mascotaId;
+        document.getElementById('appointmentDate').value = cita.fecha;
+        document.getElementById('appointmentTime').value = cita.hora;
+        document.getElementById('veterinary').value = cita.veterinaria;
+        document.getElementById('appointmentType').value = cita.tipo;
+        document.getElementById('reason').value = cita.motivo || '';
+        document.getElementById('notes').value = cita.notas || '';
+        document.getElementById('reminder1day').checked = cita.recordatorio1dia || false;
+        document.getElementById('reminder1hour').checked = cita.recordatorio1hora || false;
+    }
+    
+    // ===== RENDERIZAR CITAS =====
+    function renderAppointments() {
+        if (!appointmentsList) return;
+        
+        let citasFiltradas = [...citas];
+        
+        // Filtrar por estado
+        if (currentFilter !== 'all') {
+            citasFiltradas = citasFiltradas.filter(c => c.estado === currentFilter);
+        }
+        
+        // Filtrar por mascota
+        if (currentPetFilter !== 'all') {
+            citasFiltradas = citasFiltradas.filter(c => c.mascotaId === currentPetFilter);
+        }
+        
+        // Ordenar por fecha y hora
+        citasFiltradas.sort((a, b) => {
+            const dateA = new Date(`${a.fecha}T${a.hora}`);
+            const dateB = new Date(`${b.fecha}T${b.hora}`);
+            return dateA - dateB;
+        });
+        
+        // Mostrar estado vacío si no hay citas
+        if (citasFiltradas.length === 0) {
+            appointmentsList.innerHTML = '';
+            if (emptyState) emptyState.classList.add('show');
+            return;
+        }
+        
+        if (emptyState) emptyState.classList.remove('show');
+        
+        // Renderizar citas
+        appointmentsList.innerHTML = citasFiltradas.map(cita => {
+            const tipoNombres = {
+                consulta: 'Consulta',
+                vacunacion: 'Vacunación',
+                cirugia: 'Cirugía',
+                emergencia: 'Emergencia',
+                control: 'Control',
+                dental: 'Dental',
+                estetica: 'Estética',
+                otro: 'Otro'
+            };
+            
+            const estadoNombres = {
+                pendiente: 'Pendiente',
+                completada: 'Completada',
+                cancelada: 'Cancelada'
+            };
+            
+            const hasPhoto = cita.fotoMascota && (cita.fotoMascota.startsWith('data:') || cita.fotoMascota.startsWith('http'));
+            
+            return `
+                <div class="appointment-card ${cita.estado}" onclick="showAppointmentDetails('${cita.id}')">
+                    <div class="appointment-header">
+                        <div class="appointment-pet">
+                            ${hasPhoto 
+                                ? `<img src="${cita.fotoMascota}" alt="${cita.nombreMascota}" class="pet-avatar">`
+                                : `<div class="pet-avatar-placeholder">${cita.fotoMascota || '🐾'}</div>`
+                            }
+                            <div class="pet-info">
+                                <h4>${cita.nombreMascota}</h4>
+                                <p>${tipoNombres[cita.tipo] || cita.tipo}</p>
+                            </div>
+                        </div>
+                        <span class="appointment-status ${cita.estado}">${estadoNombres[cita.estado]}</span>
+                    </div>
+                    <div class="appointment-body">
+                        <div class="appointment-datetime">
+                            <i class="fas fa-calendar"></i>
+                            <span>${formatDateLong(cita.fecha)}</span>
+                            <i class="fas fa-clock"></i>
+                            <span>${cita.hora}</span>
+                        </div>
+                        <div class="appointment-location">
+                            <i class="fas fa-hospital"></i>
+                            <span>${cita.veterinaria}</span>
+                        </div>
+                    </div>
+                    <div class="appointment-footer">
+                        <div class="appointment-type">
+                            ${cita.motivo ? `<span>${cita.motivo}</span>` : ''}
+                        </div>
+                        <div class="appointment-actions" onclick="event.stopPropagation()">
+                            ${cita.estado === 'pendiente' ? `
+                                <button class="action-btn complete" onclick="completeAppointment('${cita.id}')" title="Marcar como completada">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            ` : ''}
+                            <button class="action-btn edit" onclick="editAppointment('${cita.id}')" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteAppointment('${cita.id}')" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        updateFilterCounts();
+    }
+    
+    // ===== CALENDARIO =====
+    function renderCalendar() {
+        if (!calendarGrid) return;
+        
+        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                           'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        
+        const currentMonthEl = document.getElementById('currentMonth');
+        if (currentMonthEl) {
+            currentMonthEl.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        }
+        
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const today = new Date();
+        
+        let calendarHTML = '';
+        
+        // Headers
+        const dayHeaders = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+        dayHeaders.forEach(day => {
+            calendarHTML += `<div class="calendar-day header">${day}</div>`;
+        });
+        
+        // Días vacíos
+        for (let i = 0; i < firstDay; i++) {
+            calendarHTML += '<div class="calendar-day inactive"></div>';
+        }
+        
+        // Días del mes
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(currentYear, currentMonth, day);
+            const dateStr = formatDate(date);
+            const hasCita = citas.some(c => c.fecha === dateStr);
+            const isToday = date.toDateString() === today.toDateString();
+            
+            let classes = 'calendar-day';
+            if (isToday) classes += ' today';
+            if (hasCita) classes += ' has-appointment';
+            
+            calendarHTML += `<div class="${classes}" data-date="${dateStr}">${day}</div>`;
+        }
+        
+        calendarGrid.innerHTML = calendarHTML;
+        
+        // Event listeners para días
+        document.querySelectorAll('.calendar-day:not(.header):not(.inactive)').forEach(day => {
+            day.addEventListener('click', (e) => {
+                const date = e.target.dataset.date;
+                if (date) {
+                    openModal();
+                    setTimeout(() => {
+                        document.getElementById('appointmentDate').value = date;
+                    }, 100);
+                }
+            });
+        });
+    }
+    
+    function changeMonth(direction) {
+        currentMonth += direction;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        } else if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar();
+    }
+    
+    // ===== ESTADÍSTICAS =====
+    function updateStats() {
+        const pendientes = citas.filter(c => c.estado === 'pendiente').length;
+        const completadas = citas.filter(c => c.estado === 'completada').length;
+        
+        const today = new Date();
+        const proximas = citas.filter(c => {
+            const citaDate = new Date(`${c.fecha}T${c.hora}`);
+            return c.estado === 'pendiente' && citaDate >= today;
+        }).length;
+        
+        const pendingEl = document.getElementById('pendingCount');
+        const completedEl = document.getElementById('completedCount');
+        const upcomingEl = document.getElementById('upcomingCount');
+        
+        if (pendingEl) pendingEl.textContent = pendientes;
+        if (completedEl) completedEl.textContent = completadas;
+        if (upcomingEl) upcomingEl.textContent = proximas;
+    }
+    
+    function updateFilterCounts() {
+        const all = citas.length;
+        const pendiente = citas.filter(c => c.estado === 'pendiente').length;
+        const completada = citas.filter(c => c.estado === 'completada').length;
+        const cancelada = citas.filter(c => c.estado === 'cancelada').length;
+        
+        const allEl = document.getElementById('allCount');
+        const pendienteEl = document.getElementById('pendienteCount');
+        const completadaEl = document.getElementById('completadaCount');
+        const canceladaEl = document.getElementById('canceladaCount');
+        
+        if (allEl) allEl.textContent = all;
+        if (pendienteEl) pendienteEl.textContent = pendiente;
+        if (completadaEl) completadaEl.textContent = completada;
+        if (canceladaEl) canceladaEl.textContent = cancelada;
+    }
+    
+    // ===== ACCIONES =====
+    window.editAppointment = function(citaId) {
+        openModal(citaId);
+    };
+    
+    window.completeAppointment = function(citaId) {
+        const cita = citas.find(c => c.id === citaId);
+        if (cita) {
+            cita.estado = 'completada';
+            saveCitas();
+            renderAppointments();
+            updateStats();
+            showNotification('✅ Cita marcada como completada', 'success');
+        }
+    };
+    
+    window.deleteAppointment = function(citaId) {
+        const cita = citas.find(c => c.id === citaId);
+        if (!cita) return;
+        
+        if (confirm(`¿Eliminar la cita de ${cita.nombreMascota}?`)) {
+            citas = citas.filter(c => c.id !== citaId);
+            saveCitas();
+            renderAppointments();
+            renderCalendar();
+            updateStats();
+            showNotification('🗑️ Cita eliminada', 'info');
+        }
+    };
+    
+    window.showAppointmentDetails = function(citaId) {
+        const cita = citas.find(c => c.id === citaId);
+        if (!cita || !detailsModal) return;
+        
+        const tipoNombres = {
+            consulta: 'Consulta General',
+            vacunacion: 'Vacunación',
+            cirugia: 'Cirugía',
+            emergencia: 'Emergencia',
+            control: 'Control/Revisión',
+            dental: 'Dental',
+            estetica: 'Estética',
+            otro: 'Otro'
+        };
+        
+        const estadoNombres = {
+            pendiente: 'Pendiente',
+            completada: 'Completada',
+            cancelada: 'Cancelada'
+        };
+        
+        const detailsHTML = `
+            <div class="detail-section">
+                <div class="detail-row">
+                    <div class="detail-icon"><i class="fas fa-paw"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Mascota</div>
+                        <div class="detail-value">${cita.nombreMascota}</div>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-icon"><i class="fas fa-calendar"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Fecha y Hora</div>
+                        <div class="detail-value">${formatDateLong(cita.fecha)} - ${cita.hora}</div>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-icon"><i class="fas fa-hospital"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Veterinaria</div>
+                        <div class="detail-value">${cita.veterinaria}</div>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-icon"><i class="fas fa-stethoscope"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Tipo de Cita</div>
+                        <div class="detail-value">${tipoNombres[cita.tipo]}</div>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="detail-content">
+                        <div class="detail-label">Estado</div>
+                        <div class="detail-value">${estadoNombres[cita.estado]}</div>
+                    </div>
+                </div>
+                ${cita.motivo ? `
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fas fa-notes-medical"></i></div>
+                        <div class="detail-content">
+                            <div class="detail-label">Motivo</div>
+                            <div class="detail-value">${cita.motivo}</div>
+                        </div>
+                    </div>
+                ` : ''}
+                ${cita.notas ? `
+                    <div class="detail-row">
+                        <div class="detail-icon"><i class="fas fa-comment-medical"></i></div>
+                        <div class="detail-content">
+                            <div class="detail-label">Notas</div>
+                            <div class="detail-value">${cita.notas}</div>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        
+        const detailsContainer = document.getElementById('appointmentDetails');
+        if (detailsContainer) {
+            detailsContainer.innerHTML = detailsHTML;
+        }
+        
+        const editBtn = document.getElementById('editDetailsBtn');
+        const deleteBtn = document.getElementById('deleteDetailsBtn');
+        
+        if (editBtn) {
+            editBtn.onclick = () => {
+                closeDetailsModal();
+                editAppointment(citaId);
+            };
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.onclick = () => {
+                closeDetailsModal();
+                deleteAppointment(citaId);
+            };
+        }
+        
+        detailsModal.classList.add('show');
+    };
+    
+    // ===== UTILIDADES =====
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    
+    function formatDateLong(dateStr) {
+        const date = new Date(dateStr + 'T00:00:00');
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString('es-ES', options);
+    }
+    
+    function showNotification(message, type = 'info') {
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+        
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+    
+    // ===== INICIAR APLICACIÓN =====
+    init();
+    console.log('✅ Sistema de citas inicializado correctamente');
+});

@@ -1,0 +1,91 @@
+/* ===============================
+   Pantalla: Cuenta creada con éxito
+   =============================== */
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.created-container {
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 0.7s ease;
+}
+
+.content-box {
+    background: var(--white);
+    padding: 38px 28px;
+    border-radius: 26px;
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+}
+
+.icon-box {
+    width: 85px;
+    height: 85px;
+    background: var(--white);
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+    border: 3px solid var(--primary-green);
+}
+
+.icon-box i {
+    font-size: 48px;
+    color: var(--primary-green);
+}
+
+h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 15px;
+    color: var(--text-gray);
+    margin-bottom: 26px;
+}
+
+/* Botón */
+#goToMenuBtn {
+    width: 100%;
+    font-size: 16px;
+    border-radius: 14px;
+    gap: 8px;
+}
+
+/* Confetti canvas */
+#confettiCanvas {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

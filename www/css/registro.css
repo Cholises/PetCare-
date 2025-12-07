@@ -1,0 +1,81 @@
+/* ===============================
+   CSS exclusivo de registro
+   =============================== */
+
+/* Contenedor más ancho para registro */
+.register-container {
+    max-width: 520px;
+}
+
+/* Ajustes visuales ligeros */
+.logo-section {
+    margin-bottom: 18px;
+}
+
+/* --- Fuerza de Contraseña (Barra + Texto estilo Gmail) --- */
+
+.pass-strength-container {
+    width: 100%;
+    margin: 6px 0 12px;
+}
+
+.pass-bar {
+    width: 100%;
+    height: 7px;
+    background: #E5E7EB; /* gris claro */
+    border-radius: 8px;
+    overflow: hidden;
+    transition: background 0.3s ease, width 0.3s ease;
+    position: relative;
+}
+
+.pass-bar::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background: #ef4444;
+    border-radius: 8px;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.pass-text {
+    font-size: 13px;
+    color: #6B7280; /* gris sutil */
+    margin-top: 4px;
+    height: 16px;
+    transition: color 0.3s ease;
+}
+
+/* Estados de la barra de fuerza */
+.pass-weak::after {
+    width: 33%;
+    background: #EF4444; /* rojo */
+}
+.pass-medium::after {
+    width: 66%;
+    background: #F59E0B; /* amarillo/ámbar */
+}
+.pass-strong::after {
+    width: 100%;
+    background: #10B981; /* verde */
+}
+
+/* Cuando no hay texto aún (para opción 2 que elegiste) */
+.pass-text.hidden {
+    visibility: hidden;
+}
+
+/* Evita que el contenedor se mueva */
+.pass-text:empty::before {
+    content: "";
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .register-container {
+        padding: 0 14px;
+    }
+}

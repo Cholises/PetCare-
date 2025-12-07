@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial Médico - PetCare+</title>
+    <link rel="stylesheet" href="css/historial.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <button class="back-btn" onclick="window.location.href='menu.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Historial Médico</h1>
+        <button class="search-btn" id="searchBtn">
+            <i class="fas fa-search"></i>
+        </button>
+    </header>
+
+    <!-- Filtro de Mascotas -->
+    <div class="pet-selector">
+        <label>
+            <i class="fas fa-paw"></i> Selecciona una mascota
+        </label>
+        <select id="petFilter" class="pet-select">
+            <option value="all">Todas las mascotas</option>
+        </select>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-notes-medical"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="totalRegistros">0</span>
+                <span class="stat-label">Registros</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="totalConsultas">0</span>
+                <span class="stat-label">Consultas</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="ultimoMes">0</span>
+                <span class="stat-label">Último mes</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline de Registros -->
+    <div class="timeline-section">
+        <h3 class="section-title">Historial Clínico</h3>
+        <div class="timeline" id="timeline">
+            <!-- Los registros se generarán con JavaScript -->
+        </div>
+        
+            <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+            <i class="fas fa-file-medical"></i>
+        </div>
+        <h3>Sin registros médicos</h3>
+        <p>Comienza a documentar las consultas veterinarias</p>
+        <button class="btn-primary">
+            <i class="fas fa-plus"></i> Agregar Registro
+        </button>
+    </div>
+    </div>
+
+    <!-- Modal Agregar/Editar Registro -->
+    <div class="modal" id="registroModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nuevo Registro Médico</h2>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="registroForm">
+                <!-- Información Básica -->
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Información Básica</h3>
+                    
+                    <div class="form-group">
+                        <label for="mascotaSelect">
+                            <i class="fas fa-paw"></i> Mascota *
+                        </label>
+                        <select id="mascotaSelect" required>
+                            <option value="">Selecciona una mascota</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fechaConsulta">
+                                <i class="fas fa-calendar"></i> Fecha *
+                            </label>
+                            <input type="date" id="fechaConsulta" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="horaConsulta">
+                                <i class="fas fa-clock"></i> Hora *
+                            </label>
+                            <input type="time" id="horaConsulta" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="veterinario">
+                            <i class="fas fa-user-md"></i> Veterinario *
+                        </label>
+                        <input type="text" id="veterinario" placeholder="Dr. Juan Pérez" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="veterinaria">
+                            <i class="fas fa-hospital"></i> Clínica/Hospital *
+                        </label>
+                        <input type="text" id="veterinaria" placeholder="Clínica Veterinaria San Francisco" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoConsulta">
+                            <i class="fas fa-stethoscope"></i> Tipo de Consulta *
+                        </label>
+                        <select id="tipoConsulta" required>
+                            <option value="">Selecciona el tipo</option>
+                            <option value="consulta">Consulta General</option>
+                            <option value="emergencia">Emergencia</option>
+                            <option value="cirugia">Cirugía</option>
+                            <option value="control">Control Post-operatorio</option>
+                            <option value="vacunacion">Vacunación</option>
+                            <option value="examenes">Exámenes/Análisis</option>
+                            <option value="dental">Tratamiento Dental</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Motivo y Síntomas -->
+                <div class="form-section">
+                    <h3><i class="fas fa-notes-medical"></i> Motivo y Síntomas</h3>
+                    
+                    <div class="form-group">
+                        <label for="motivo">
+                            <i class="fas fa-comment-medical"></i> Motivo de Consulta *
+                        </label>
+                        <textarea id="motivo" rows="3" placeholder="¿Por qué acudiste al veterinario?" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sintomas">
+                            <i class="fas fa-heartbeat"></i> Síntomas Observados
+                        </label>
+                        <textarea id="sintomas" rows="3" placeholder="Describe los síntomas que presentaba la mascota..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Diagnóstico y Tratamiento -->
+                <div class="form-section">
+                    <h3><i class="fas fa-diagnoses"></i> Diagnóstico y Tratamiento</h3>
+                    
+                    <div class="form-group">
+                        <label for="diagnostico">
+                            <i class="fas fa-clipboard-list"></i> Diagnóstico *
+                        </label>
+                        <textarea id="diagnostico" rows="3" placeholder="Diagnóstico del veterinario..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tratamiento">
+                            <i class="fas fa-pills"></i> Tratamiento Recetado
+                        </label>
+                        <textarea id="tratamiento" rows="3" placeholder="Medicamentos, dosis, frecuencia..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="examenes">
+                            <i class="fas fa-vial"></i> Exámenes Realizados
+                        </label>
+                        <textarea id="examenes" rows="2" placeholder="Análisis de sangre, rayos X, ecografía..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Datos Vitales -->
+                <div class="form-section">
+                    <h3><i class="fas fa-heartbeat"></i> Datos Vitales</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="peso">
+                                <i class="fas fa-weight"></i> Peso (kg)
+                            </label>
+                            <input type="number" id="peso" step="0.1" min="0" placeholder="5.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="temperatura">
+                                <i class="fas fa-thermometer-half"></i> Temperatura (°C)
+                            </label>
+                            <input type="number" id="temperatura" step="0.1" min="0" placeholder="38.5">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="proximaVisita">
+                            <i class="fas fa-calendar-plus"></i> Próxima Visita
+                        </label>
+                        <input type="date" id="proximaVisita">
+                    </div>
+                </div>
+
+                <!-- Costos y Notas -->
+                <div class="form-section">
+                    <h3><i class="fas fa-dollar-sign"></i> Costos y Observaciones</h3>
+                    
+                    <div class="form-group">
+                        <label for="costo">
+                            <i class="fas fa-money-bill"></i> Costo Total (MXN)
+                        </label>
+                        <input type="number" id="costo" step="0.01" min="0" placeholder="500.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notas">
+                            <i class="fas fa-sticky-note"></i> Notas Adicionales
+                        </label>
+                        <textarea id="notas" rows="3" placeholder="Indicaciones especiales, recomendaciones..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Guardar Registro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles -->
+    <div class="modal" id="detallesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles del Registro</h2>
+                <button class="modal-close" id="closeDetallesModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="registro-details" id="registroDetails">
+                <!-- Los detalles se generarán con JavaScript -->
+            </div>
+            <div class="details-actions">
+                <button class="btn-icon" id="editDetailsBtn">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-icon danger" id="deleteDetailsBtn">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación Inferior -->
+    <nav class="bottom-nav">
+        <a href="menu.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="citas.html" class="nav-item">
+            <i class="fas fa-calendar-check"></i>
+            <span>Citas</span>
+        </a>
+        
+        <button class="nav-item-center" id="addRegistroBtn">
+            <div class="add-btn-circle">
+                <i class="fas fa-plus"></i>
+            </div>
+        </button>
+        
+        <a href="historial.html" class="nav-item active">
+            <i class="fas fa-file-medical"></i>
+            <span>Historial</span>
+        </a>
+        <a href="#" class="nav-item" onclick="alert('Función próximamente')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+
+    <script src="js/historial.js"></script>
+</body>
+</html>

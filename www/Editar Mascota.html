@@ -1,0 +1,204 @@
+<!-- 🔽 Reemplaza el modal existente en menu.html con este código mejorado -->
+
+<!-- Modal para agregar/editar mascota -->
+<div id="petModal" class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="fas fa-paw"></i>
+        <h2 id="modalTitle">Agregar Mascota</h2>
+      </div>
+      <button class="btn-close" id="closeModalBtn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <form id="petForm" class="pet-form">
+      <div class="form-content">
+        <!-- Foto de la mascota -->
+        <div class="form-group photo-upload-section">
+          <label class="photo-upload-label">
+            <input type="file" id="petPhoto" accept="image/*" hidden>
+            <div class="photo-upload-area" id="photoUploadArea">
+              <div class="upload-placeholder">
+                <i class="fas fa-camera"></i>
+                <span>Agregar foto</span>
+              </div>
+            </div>
+          </label>
+          <div class="photo-preview hidden" id="photoPreview">
+            <img id="previewImage" src="" alt="Preview">
+            <button type="button" class="btn-remove-photo" id="removePhoto">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Nombre (requerido) -->
+        <div class="form-group">
+          <label for="petName">
+            <i class="fas fa-signature"></i>
+            Nombre <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="petName" 
+            placeholder="Ej. Max, Luna, Rocky..." 
+            required
+            maxlength="30"
+          >
+        </div>
+
+        <!-- Tipo (requerido) -->
+        <div class="form-group">
+          <label for="petType">
+            <i class="fas fa-paw"></i>
+            Tipo de mascota <span class="required">*</span>
+          </label>
+          <select id="petType" required>
+            <option value="">Selecciona un tipo</option>
+            <option value="perro">🐕 Perro</option>
+            <option value="gato">🐱 Gato</option>
+            <option value="ave">🦜 Ave</option>
+            <option value="conejo">🐰 Conejo</option>
+            <option value="hamster">🐹 Hámster</option>
+            <option value="pez">🐠 Pez</option>
+            <option value="reptil">🦎 Reptil</option>
+            <option value="otro">🐾 Otro</option>
+          </select>
+        </div>
+
+        <!-- Raza -->
+        <div class="form-group">
+          <label for="petBreed">
+            <i class="fas fa-dna"></i>
+            Raza
+          </label>
+          <input 
+            type="text" 
+            id="petBreed" 
+            placeholder="Ej. Labrador, Persa, Canario..."
+            maxlength="50"
+          >
+        </div>
+
+        <!-- Edad y Peso en dos columnas -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="petAge">
+              <i class="fas fa-birthday-cake"></i>
+              Edad (años)
+            </label>
+            <input 
+              type="number" 
+              id="petAge" 
+              placeholder="0"
+              min="0"
+              max="50"
+              step="0.5"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="petWeight">
+              <i class="fas fa-weight"></i>
+              Peso (kg)
+            </label>
+            <input 
+              type="number" 
+              id="petWeight" 
+              placeholder="0.0"
+              min="0"
+              max="500"
+              step="0.1"
+            >
+          </div>
+        </div>
+
+        <!-- Género y Color en dos columnas -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="petGender">
+              <i class="fas fa-venus-mars"></i>
+              Género
+            </label>
+            <select id="petGender">
+              <option value="">Selecciona</option>
+              <option value="Macho">Macho</option>
+              <option value="Hembra">Hembra</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="petColor">
+              <i class="fas fa-palette"></i>
+              Color
+            </label>
+            <input 
+              type="text" 
+              id="petColor" 
+              placeholder="Ej. Café, Blanco..."
+              maxlength="30"
+            >
+          </div>
+        </div>
+
+        <!-- Notas adicionales -->
+        <div class="form-group">
+          <label for="petNotes">
+            <i class="fas fa-sticky-note"></i>
+            Notas adicionales
+          </label>
+          <textarea 
+            id="petNotes" 
+            rows="3" 
+            placeholder="Alergias, comportamiento, información importante..."
+            maxlength="500"
+          ></textarea>
+          <span class="char-counter" id="notesCounter">0/500</span>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="cancelBtn">
+          <i class="fas fa-times"></i>
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-check"></i>
+          <span id="submitBtnText">Guardar Mascota</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- También actualiza la sección de mascotas en el main content -->
+<!-- Reemplaza la sección "My Pets Section" con esto: -->
+
+<section class="my-pets-section">
+  <div class="section-header">
+    <h2>Mis Mascotas</h2>
+  </div>
+  <div class="pets-grid" id="petsGrid">
+  </div>
+
+  <!-- Estado vacío -->
+  <div class="empty-state" id="emptyState">
+    <div class="empty-state-icon">
+      <i class="fas fa-paw"></i>
+    </div>
+    <h3>Aún no tienes mascotas registradas</h3>
+    <p>Comienza agregando a tu primera mascota para llevar un control completo de su salud</p>
+    <button class="btn-primary" id="emptyStateBtn">
+      <i class="fas fa-plus"></i>
+      Agregar primera mascota
+    </button>
+  </div>
+
+  <!-- Lista de mascotas -->
+  <div class="pets-list hidden" id="petsList">
+    <!-- Las mascotas se cargarán dinámicamente aquí -->
+  </div>
+</section>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recordatorios - PetCare+</title>
+    <link rel="stylesheet" href="css/recordatorios.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <button class="back-btn" onclick="window.location.href='menu.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Recordatorios</h1>
+        <button class="filter-btn" id="filterBtn">
+            <i class="fas fa-filter"></i>
+        </button>
+    </header>
+
+    <!-- Pestañas de Filtro -->
+    <div class="tabs-container">
+        <button class="tab active" data-filter="todos">
+            <i class="fas fa-list"></i>
+            Todos
+        </button>
+        <button class="tab" data-filter="activos">
+            <i class="fas fa-bell"></i>
+            Activos
+        </button>
+        <button class="tab" data-filter="proximos">
+            <i class="fas fa-clock"></i>
+            Próximos
+        </button>
+        <button class="tab" data-filter="completados">
+            <i class="fas fa-check-circle"></i>
+            Completados
+        </button>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-bell-on"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="totalActivos">0</span>
+                <span class="stat-label">Activos</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon warning">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="totalVencidos">0</span>
+                <span class="stat-label">Vencidos</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon success">
+                <i class="fas fa-calendar-day"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="totalHoy">0</span>
+                <span class="stat-label">Hoy</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Recordatorios -->
+    <div class="recordatorios-section">
+        <div class="section-header">
+            <h3 class="section-title">Mis Recordatorios</h3>
+            <select id="sortSelect" class="sort-select">
+                <option value="fecha">Por fecha</option>
+                <option value="prioridad">Por prioridad</option>
+                <option value="tipo">Por tipo</option>
+                <option value="mascota">Por mascota</option>
+            </select>
+        </div>
+
+        <!-- Lista de recordatorios -->
+        <div class="recordatorios-list" id="recordatoriosList">
+            <!-- Los recordatorios se generarán con JavaScript -->
+        </div>
+
+        <!-- Estado vacío -->
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">
+                <i class="fas fa-bell-slash"></i>
+            </div>
+            <h3>Sin recordatorios</h3>
+            <p>Crea tu primer recordatorio para no olvidar nada importante</p>
+            <button class="btn-primary">
+                <i class="fas fa-plus"></i> Crear Recordatorio
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Agregar/Editar Recordatorio -->
+    <div class="modal" id="recordatorioModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nuevo Recordatorio</h2>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="recordatorioForm">
+                <!-- Información Básica -->
+                <div class="form-section">
+                    <h3><i class="fas fa-info-circle"></i> Información Básica</h3>
+                    
+                    <div class="form-group">
+                        <label for="mascotaSelect">
+                            <i class="fas fa-paw"></i> Mascota *
+                        </label>
+                        <select id="mascotaSelect" required>
+                            <option value="">Selecciona una mascota</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="titulo">
+                            <i class="fas fa-heading"></i> Título *
+                        </label>
+                        <input type="text" id="titulo" placeholder="Ej: Vacuna antirrábica" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoRecordatorio">
+                            <i class="fas fa-tag"></i> Tipo de Recordatorio *
+                        </label>
+                        <select id="tipoRecordatorio" required>
+                            <option value="">Selecciona el tipo</option>
+                            <option value="vacuna">💉 Vacuna</option>
+                            <option value="medicamento">💊 Medicamento</option>
+                            <option value="cita">📅 Cita Veterinaria</option>
+                            <option value="desparasitacion">🐛 Desparasitación</option>
+                            <option value="baño">🛁 Baño/Grooming</option>
+                            <option value="comida">🍖 Comida/Dieta</option>
+                            <option value="ejercicio">🏃 Ejercicio</option>
+                            <option value="otro">📝 Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">
+                            <i class="fas fa-align-left"></i> Descripción
+                        </label>
+                        <textarea id="descripcion" rows="3" placeholder="Detalles del recordatorio..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Fecha y Hora -->
+                <div class="form-section">
+                    <h3><i class="fas fa-calendar-alt"></i> Fecha y Hora</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fechaRecordatorio">
+                                <i class="fas fa-calendar"></i> Fecha *
+                            </label>
+                            <input type="date" id="fechaRecordatorio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="horaRecordatorio">
+                                <i class="fas fa-clock"></i> Hora *
+                            </label>
+                            <input type="time" id="horaRecordatorio" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="esRecurrente">
+                            <span>Este recordatorio se repite</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group hidden" id="recurrenciaGroup">
+                        <label for="frecuencia">
+                            <i class="fas fa-repeat"></i> Frecuencia
+                        </label>
+                        <select id="frecuencia">
+                            <option value="diario">Diariamente</option>
+                            <option value="semanal">Semanalmente</option>
+                            <option value="mensual">Mensualmente</option>
+                            <option value="anual">Anualmente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Prioridad y Notificaciones -->
+                <div class="form-section">
+                    <h3><i class="fas fa-exclamation-circle"></i> Prioridad y Alertas</h3>
+                    
+                    <div class="form-group">
+                        <label for="prioridad">
+                            <i class="fas fa-flag"></i> Prioridad *
+                        </label>
+                        <select id="prioridad" required>
+                            <option value="baja">🟢 Baja</option>
+                            <option value="media" selected>🟡 Media</option>
+                            <option value="alta">🔴 Alta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="anticipacion">
+                            <i class="fas fa-bell"></i> Recordar con anticipación
+                        </label>
+                        <select id="anticipacion">
+                            <option value="0">En el momento</option>
+                            <option value="15">15 minutos antes</option>
+                            <option value="30">30 minutos antes</option>
+                            <option value="60">1 hora antes</option>
+                            <option value="1440">1 día antes</option>
+                            <option value="10080">1 semana antes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notas">
+                            <i class="fas fa-sticky-note"></i> Notas Adicionales
+                        </label>
+                        <textarea id="notas" rows="2" placeholder="Información adicional..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Guardar Recordatorio
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles -->
+    <div class="modal" id="detallesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles del Recordatorio</h2>
+                <button class="modal-close" id="closeDetallesModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="recordatorio-details" id="recordatorioDetails">
+                <!-- Los detalles se generarán con JavaScript -->
+            </div>
+            <div class="details-actions">
+                <button class="btn-icon success" id="marcarCompletadoBtn">
+                    <i class="fas fa-check"></i> Completar
+                </button>
+                <button class="btn-icon" id="editDetailsBtn">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-icon danger" id="deleteDetailsBtn">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación Inferior -->
+    <nav class="bottom-nav">
+        <a href="menu.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="citas.html" class="nav-item">
+            <i class="fas fa-calendar-check"></i>
+            <span>Citas</span>
+        </a>
+        
+        <button class="nav-item-center" id="addRecordatorioBtn">
+            <div class="add-btn-circle">
+                <i class="fas fa-plus"></i>
+            </div>
+        </button>
+        
+        <a href="historial.html" class="nav-item">
+            <i class="fas fa-file-medical"></i>
+            <span>Historial</span>
+        </a>
+        <a href="#" class="nav-item" onclick="alert('Función próximamente')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+
+    <script src="js/recordatorios.js"></script>
+</body>
+</html>

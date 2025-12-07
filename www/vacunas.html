@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacunas - PetCare+</title>
+    <link rel="stylesheet" href="css/vacunas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Header con botón de regreso -->
+    <header class="page-header">
+        <div class="header-container">
+            <button class="btn-back" onclick="window.location.href='menu.html'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-title">
+                <i class="fas fa-syringe"></i>
+                <h1>Vacunas</h1>
+            </div>
+            <button class="btn-add-header" id="btnAddVaccine">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        <p class="header-subtitle">Mantén el control de las vacunas de tus mascotas</p>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        
+        <!-- Selector de Mascota -->
+        <section class="pet-selector-section">
+            <label for="petSelector">
+                <i class="fas fa-paw"></i>
+                Selecciona una mascota
+            </label>
+            <select id="petSelector" class="pet-select">
+                <option value="">Todas las mascotas</option>
+            </select>
+        </section>
+
+        <!-- Estado vacío -->
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">
+                <i class="fas fa-syringe"></i>
+            </div>
+            <h3>Aún no has registrado ninguna vacuna 💉</h3>
+            <p>Comienza a registrar las vacunas de tus mascotas para mantener su salud al día</p>
+            <button class="btn-primary" id="btnAddVaccineEmpty">
+                <i class="fas fa-plus"></i>
+                Agregar Primera Vacuna
+            </button>
+        </div>
+
+        <!-- Lista de Vacunas -->
+        <div class="vaccines-container hidden" id="vaccinesContainer">
+            <div class="section-header">
+                <h2>Vacunas Registradas</h2>
+                <span class="vaccines-count" id="vaccinesCount">0</span>
+            </div>
+            <div class="vaccines-list" id="vaccinesList"></div>
+        </div>
+
+        <!-- Próximas Vacunas -->
+        <div class="upcoming-vaccines hidden" id="upcomingVaccines">
+            <div class="section-header">
+                <h2>Próximas Vacunas</h2>
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="upcoming-list" id="upcomingList"></div>
+        </div>
+
+    </main>
+
+    <!-- Modal para Agregar/Editar Vacuna -->
+    <div class="modal-overlay" id="vaccineModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-syringe"></i>
+                    <h2 id="modalTitle">Agregar Vacuna</h2>
+                </div>
+                <button class="btn-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form class="vaccine-form" id="vaccineForm">
+                <div class="form-content">
+                    
+                    <!-- Mascota -->
+                    <div class="form-group">
+                        <label for="vaccinePet">
+                            <i class="fas fa-paw"></i>
+                            Mascota <span class="required">*</span>
+                        </label>
+                        <select id="vaccinePet" required>
+                            <option value="">Selecciona una mascota</option>
+                        </select>
+                    </div>
+
+                    <!-- Nombre de la vacuna -->
+                    <div class="form-group">
+                        <label for="vaccineName">
+                            <i class="fas fa-syringe"></i>
+                            Nombre de la vacuna <span class="required">*</span>
+                        </label>
+                        <select id="vaccineName" required>
+                            <option value="">Selecciona...</option>
+                            <option value="Rabia">Rabia</option>
+                            <option value="Parvovirus">Parvovirus</option>
+                            <option value="Moquillo">Moquillo</option>
+                            <option value="Hepatitis">Hepatitis</option>
+                            <option value="Leptospirosis">Leptospirosis</option>
+                            <option value="Triple Felina">Triple Felina</option>
+                            <option value="Leucemia Felina">Leucemia Felina</option>
+                            <option value="Otra">Otra</option>
+                        </select>
+                    </div>
+
+                    <!-- Nombre personalizado (si selecciona "Otra") -->
+                    <div class="form-group hidden" id="customNameGroup">
+                        <label for="customVaccineName">
+                            <i class="fas fa-pen"></i>
+                            Especifica el nombre
+                        </label>
+                        <input type="text" id="customVaccineName" placeholder="Nombre de la vacuna">
+                    </div>
+
+                    <!-- Fila: Fecha aplicación y Próxima dosis -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="applicationDate">
+                                <i class="fas fa-calendar"></i>
+                                Fecha de aplicación <span class="required">*</span>
+                            </label>
+                            <input type="date" id="applicationDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nextDoseDate">
+                                <i class="fas fa-calendar-plus"></i>
+                                Próxima dosis
+                            </label>
+                            <input type="date" id="nextDoseDate">
+                        </div>
+                    </div>
+
+                    <!-- Veterinario -->
+                    <div class="form-group">
+                        <label for="veterinarian">
+                            <i class="fas fa-user-md"></i>
+                            Veterinario
+                        </label>
+                        <input type="text" id="veterinarian" placeholder="Nombre del veterinario">
+                    </div>
+
+                    <!-- Lote -->
+                    <div class="form-group">
+                        <label for="batchNumber">
+                            <i class="fas fa-barcode"></i>
+                            Número de lote
+                        </label>
+                        <input type="text" id="batchNumber" placeholder="Ej: ABC123">
+                    </div>
+
+                    <!-- Notas -->
+                    <div class="form-group">
+                        <label for="vaccineNotes">
+                            <i class="fas fa-note-sticky"></i>
+                            Notas adicionales
+                        </label>
+                        <textarea id="vaccineNotes" placeholder="Efectos secundarios, observaciones, etc." maxlength="500"></textarea>
+                        <span class="char-counter" id="notesCounter">0/500</span>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-check"></i>
+                        <span id="submitBtnText">Guardar Vacuna</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION (SIEMPRE VISIBLE) -->
+    <nav class="bottom-nav">
+        <a href="menu.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="calendario.html" class="nav-item">
+            <i class="fas fa-calendar"></i>
+            <span>Calendario</span>
+        </a>
+        <a href="#" class="nav-item add-button" id="quickAddBtn">
+            <div class="add-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+        </a>
+        <a href="buscar.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="perfil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+
+    <script src="js/vacunas.js"></script>
+</body>
+</html>

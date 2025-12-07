@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Citas - PetCare+</title>
+    <link rel="stylesheet" href="css/citas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <button class="back-btn" onclick="window.location.href='menu.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Mis Citas</h1>
+        <button class="filter-btn" id="filterBtn">
+            <i class="fas fa-filter"></i>
+        </button>
+    </header>
+
+    <!-- Estadísticas rápidas -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon pending">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="pendingCount">0</span>
+                <span class="stat-label">Pendientes</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon completed">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="completedCount">0</span>
+                <span class="stat-label">Completadas</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon upcoming">
+                <i class="fas fa-calendar-day"></i>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number" id="upcomingCount">0</span>
+                <span class="stat-label">Próximas</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendario Mini -->
+    <div class="calendar-section">
+        <div class="calendar-header">
+            <button class="calendar-nav" id="prevMonth">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <h2 id="currentMonth">Noviembre 2024</h2>
+            <button class="calendar-nav" id="nextMonth">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- Los días se generarán con JavaScript -->
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-section" id="filterSection">
+        <div class="filter-chips">
+            <button class="filter-chip active" data-filter="all">
+                Todas <span class="chip-count" id="allCount">0</span>
+            </button>
+            <button class="filter-chip" data-filter="pendiente">
+                Pendientes <span class="chip-count" id="pendienteCount">0</span>
+            </button>
+            <button class="filter-chip" data-filter="completada">
+                Completadas <span class="chip-count" id="completadaCount">0</span>
+            </button>
+            <button class="filter-chip" data-filter="cancelada">
+                Canceladas <span class="chip-count" id="canceladaCount">0</span>
+            </button>
+        </div>
+        <select class="pet-filter" id="petFilter">
+            <option value="all">Todas las mascotas</option>
+        </select>
+    </div>
+
+    <!-- Lista de Citas -->
+    <div class="appointments-section">
+        <h3 class="section-title">Próximas Citas</h3>
+        <div class="appointments-list" id="appointmentsList">
+            <!-- Las citas se generarán con JavaScript -->
+        </div>
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <h3>No hay citas programadas</h3>
+            <p>Agenda una cita veterinaria para tus mascotas</p>
+        </div>
+    </div>
+
+    <!-- Modal Agregar/Editar Cita -->
+    <div class="modal" id="appointmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nueva Cita</h2>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="appointmentForm">
+                <div class="form-group">
+                    <label for="petSelect">
+                        <i class="fas fa-paw"></i> Mascota *
+                    </label>
+                    <select id="petSelect" required>
+                        <option value="">Selecciona una mascota</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="appointmentDate">
+                            <i class="fas fa-calendar"></i> Fecha *
+                        </label>
+                        <input type="date" id="appointmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentTime">
+                            <i class="fas fa-clock"></i> Hora *
+                        </label>
+                        <input type="time" id="appointmentTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="veterinary">
+                        <i class="fas fa-hospital"></i> Veterinaria/Clínica *
+                    </label>
+                    <input type="text" id="veterinary" placeholder="Ej: Clínica Veterinaria San Francisco" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointmentType">
+                        <i class="fas fa-stethoscope"></i> Tipo de cita *
+                    </label>
+                    <select id="appointmentType" required>
+                        <option value="">Selecciona el tipo</option>
+                        <option value="consulta">Consulta General</option>
+                        <option value="vacunacion">Vacunación</option>
+                        <option value="cirugia">Cirugía</option>
+                        <option value="emergencia">Emergencia</option>
+                        <option value="control">Control/Revisión</option>
+                        <option value="dental">Dental</option>
+                        <option value="estetica">Estética</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">
+                        <i class="fas fa-notes-medical"></i> Motivo de la cita
+                    </label>
+                    <textarea id="reason" rows="3" placeholder="Describe el motivo de la consulta..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">
+                        <i class="fas fa-comment-medical"></i> Notas adicionales
+                    </label>
+                    <textarea id="notes" rows="2" placeholder="Información adicional, indicaciones especiales..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-bell"></i> Recordatorio
+                    </label>
+                    <div class="reminder-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="reminder1day" checked>
+                            <span>1 día antes</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="reminder1hour">
+                            <span>1 hora antes</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Guardar Cita
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalles de Cita -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalles de la Cita</h2>
+                <button class="modal-close" id="closeDetailsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="appointment-details" id="appointmentDetails">
+                <!-- Los detalles se generarán con JavaScript -->
+            </div>
+            <div class="details-actions">
+                <button class="btn-icon" id="editDetailsBtn">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-icon danger" id="deleteDetailsBtn">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación Inferior CON BOTÓN CENTRAL -->
+    <nav class="bottom-nav">
+        <a href="menu.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="citas.html" class="nav-item active">
+            <i class="fas fa-calendar-check"></i>
+            <span>Citas</span>
+        </a>
+        
+        <!-- BOTÓN CENTRAL DE AGREGAR -->
+        <button class="nav-item-center" id="addAppointmentBtn">
+            <div class="add-btn-circle">
+                <i class="fas fa-plus"></i>
+            </div>
+        </button>
+        
+        <a href="#" class="nav-item" onclick="alert('Función próximamente')">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="#" class="nav-item" onclick="alert('Función próximamente')">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+
+    <script src="js/citas.js"></script>
+</body>
+</html>

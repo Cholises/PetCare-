@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuenta creada - PetCare+</title>
+
+    <!-- Reutilizamos tu diseño base -->
+    <link rel="stylesheet" href="css/login.css">
+    <!-- Estilo específico de esta pantalla -->
+    <link rel="stylesheet" href="css/creado.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="created-container">
+        <div class="content-box">
+            <div class="icon-box">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 id="welcomeUserText">¡Cuenta creada con éxito!</h2>
+            <p class="subtitle">Bienvenido a PetCare+, tu apoyo para el cuidado de tus mascotas 🐾</p>
+
+            <button id="goToMenuBtn" class="btn-login">
+                Ir al menú
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Lienzo del confetti -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <script src="js/creado.js"></script>
+</body>
+</html>
