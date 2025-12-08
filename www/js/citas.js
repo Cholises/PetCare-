@@ -1,7 +1,7 @@
 // js/citas.js - Sistema de Citas Veterinarias (Compatible con menu.js)
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('📅 Inicializando sistema de citas...');
+    
     
     // ===== VERIFICAR SESIÓN =====
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -12,7 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    console.log('✅ Usuario logueado:', currentUser.nombre);
+    
+
+    // Email del usuario (compatibilidad con `correo` / `email`)
+    const correoUsuario = currentUser.correo || currentUser.email || null;
+    const normalizedCorreo = correoUsuario ? String(correoUsuario).toLowerCase().trim() : null;
     
     // ===== VARIABLES GLOBALES =====
     let citas = [];
@@ -22,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let editingAppointmentId = null;
     let currentFilter = 'all';
     let currentPetFilter = 'all';
+    let selectedDateParam = null;
+    let targetCitaId = null;
     
     // ===== ELEMENTOS DEL DOM =====
     const modal = document.getElementById('appointmentModal');
@@ -35,10 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadData() {
         // Cargar todas las mascotas
         const todasMascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
-        // Filtrar solo las del usuario actual
-        mascotas = todasMascotas.filter(m => m.dueño === currentUser.correo);
+        // Filtrar solo las del usuario actual (compatibilidad con varias claves)
+        // Comparación insensible a mayúsculas para `correo`/`owner` y coincidencia por userId
+        mascotas = todasMascotas.filter(m => {
+            const ownerVals = [m['dueño'], m.owner, m.userId];
+            const ownerMatch = ownerVals.some(v => v && normalizedCorreo && String(v).toLowerCase().trim() === normalizedCorreo);
+            const idMatch = (m.userId && currentUser.id && m.userId === currentUser.id);
+            return ownerMatch || idMatch;
+        });
         
-        console.log(`🐾 Mascotas del usuario: ${mascotas.length}`);
+        
         
         // Cargar todas las citas
         const todasCitas = JSON.parse(localStorage.getItem('citas') || '[]');
@@ -46,13 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const mascotasIds = mascotas.map(m => m.id);
         citas = todasCitas.filter(c => mascotasIds.includes(c.mascotaId));
         
-        console.log(`📅 Citas del usuario: ${citas.length}`);
         
+
         // Si no hay mascotas, mostrar advertencia
         if (mascotas.length === 0) {
             console.warn('⚠️ No hay mascotas registradas');
         }
+
+        // (debug panel removed)
     }
+    
     
     // ===== GUARDAR CITAS =====
     function saveCitas() {
@@ -296,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         citas.push(nuevaCita);
         saveCitas();
         
-        console.log('✅ Cita creada:', nuevaCita);
+        
         showNotification(`🎉 Cita agendada para ${citaData.nombreMascota}`, 'success');
         
         closeModal();
@@ -320,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         saveCitas();
-        console.log('✅ Cita actualizada:', citas[index]);
+        
         showNotification('✅ Cita actualizada correctamente', 'success');
         
         closeModal();
@@ -359,6 +374,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Filtrar por mascota
         if (currentPetFilter !== 'all') {
             citasFiltradas = citasFiltradas.filter(c => c.mascotaId === currentPetFilter);
+        }
+
+        // Si venimos con una fecha específica desde el menú/calendario, filtrar por esa fecha
+        if (selectedDateParam) {
+            citasFiltradas = citasFiltradas.filter(c => c.fecha === selectedDateParam);
         }
         
         // Ordenar por fecha y hora
@@ -448,6 +468,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
         
         updateFilterCounts();
+
+        // Si se solicitó abrir una cita específica desde parámetros, abrir detalles y limpiar el parámetro
+        if (targetCitaId) {
+            const citaTarget = citas.find(c => c.id === targetCitaId);
+            if (citaTarget) {
+                setTimeout(() => {
+                    showAppointmentDetails(targetCitaId);
+                }, 200);
+            }
+            targetCitaId = null;
+            // Limpiar parámetros de la URL para evitar comportamiento repetido
+            try { history.replaceState(null, '', window.location.pathname); } catch (e) {}
+        }
     }
     
     // ===== CALENDARIO =====
@@ -467,6 +500,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = new Date();
         
         let calendarHTML = '';
+
+        // Debug: listar fechas únicas de citas
+        try {
+            const uniqueDates = Array.from(new Set(citas.map(c=>c.fecha))).slice(0,20);
+            
+        } catch(e) {}
         
         // Headers
         const dayHeaders = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
@@ -732,7 +771,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
     
+    // ===== PARSEAR PARÁMETROS DE URL (enlaces desde menú/calendario) =====
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('date')) {
+        selectedDateParam = urlParams.get('date');
+        const d = new Date(selectedDateParam);
+        if (!isNaN(d)) {
+            currentMonth = d.getMonth();
+            currentYear = d.getFullYear();
+        }
+    }
+    if (urlParams.has('id')) {
+        targetCitaId = urlParams.get('id');
+    } else if (urlParams.has('citaId')) {
+        targetCitaId = urlParams.get('citaId');
+    }
+
     // ===== INICIAR APLICACIÓN =====
     init();
-    console.log('✅ Sistema de citas inicializado correctamente');
 });

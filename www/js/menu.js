@@ -1,7 +1,7 @@
 // js/menu.js - Sistema de gestión de mascotas (VERSIÓN CORREGIDA)
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("🐾 Inicializando sistema de mascotas...");
+  
 
   // ===== VERIFICAR SESIÓN PRIMERO =====
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -12,7 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  console.log("✅ Usuario logueado:", currentUser.nombre);
+  
+
+  // Email del usuario (compatibilidad con campos `correo` y `email`)
+  const correoUsuario = currentUser.correo || currentUser.email || null;
 
   // ===== ELEMENTOS DEL DOM =====
   const modal = document.getElementById("petModal");
@@ -23,8 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const emptyState = document.getElementById("emptyState");
   const petsCounter = document.getElementById("petsCounter");
   const totalPets = document.getElementById("totalPets");
+  const pendingVaccines = document.getElementById("pendingVaccines");
+  const upcomingAppointments = document.getElementById("upcomingAppointments");
   const addMoreBtn = document.getElementById("addMoreBtn");
   
+  const notificationBtn = document.getElementById("notificationBtn");
+  const notificationBadge = document.querySelector(".notification-badge");
   // 🔧 CORRECCIÓN: Buscar botones de cerrar con diferentes IDs posibles
   const closeModalBtn = document.getElementById("closeModalBtn") || 
                         document.getElementById("closeModal") ||
@@ -57,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  console.log("✅ Elementos del DOM cargados correctamente");
+  
 
   // Variable para modo edición
   let editingPetId = null;
@@ -89,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     modal.classList.add("active");
     document.body.style.overflow = "hidden";
-    console.log("✅ Modal abierto");
   }
 
   function closeModal() {
@@ -100,15 +106,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (petForm) petForm.reset();
     resetPhotoPreview();
     editingPetId = null;
-    console.log("✅ Modal cerrado");
   }
 
   // ===== EVENT LISTENERS PARA ABRIR/CERRAR MODAL =====
   
   // Botón del estado vacío
   if (emptyStateBtn) {
-    emptyStateBtn.addEventListener("click", () => {
-      console.log("🖱️ Click en emptyStateBtn");
+      emptyStateBtn.addEventListener("click", () => {
       openModal();
     });
   }
@@ -117,7 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (quickAddBtn) {
     quickAddBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      console.log("🖱️ Click en quickAddBtn");
       openModal();
     });
   }
@@ -125,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Botón para agregar más mascotas
   if (addMoreBtn) {
     addMoreBtn.addEventListener("click", () => {
-      console.log("🖱️ Click en addMoreBtn");
       openModal();
     });
   }
@@ -134,10 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (closeModalBtn) {
     closeModalBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      console.log("🖱️ Click en botón X (cerrar)");
       closeModal();
     });
-    console.log("✅ Botón de cerrar (X) conectado");
   } else {
     console.warn("⚠️ No se encontró el botón de cerrar modal");
   }
@@ -146,17 +146,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (cancelBtn) {
     cancelBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      console.log("🖱️ Click en Cancelar");
       closeModal();
     });
-    console.log("✅ Botón Cancelar conectado");
   }
 
   // Cerrar modal al hacer clic fuera (en el overlay)
   if (modal) {
-    modal.addEventListener("click", (e) => {
+      modal.addEventListener("click", (e) => {
       if (e.target === modal) {
-        console.log("🖱️ Click fuera del modal");
         closeModal();
       }
     });
@@ -165,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cerrar con tecla ESC
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && modal && modal.classList.contains("active")) {
-      console.log("⌨️ Tecla ESC presionada");
       closeModal();
     }
   });
@@ -265,7 +261,8 @@ document.addEventListener("DOMContentLoaded", () => {
         color: colorInput ? colorInput.value.trim() : "",
         foto: (previewImage && previewImage.src) ? previewImage.src : getDefaultPetIcon(tipo),
         notas: notasInput ? notasInput.value.trim() : "",
-        dueño: currentUser.correo
+        dueño: correoUsuario,
+        owner: correoUsuario
       };
 
       if (editingPetId) {
@@ -288,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mascotas.push(mascota);
     localStorage.setItem("mascotas", JSON.stringify(mascotas));
 
-    console.log("✅ Mascota creada:", mascota);
+    
     showNotification(`🎉 ¡${mascota.nombre} fue agregado exitosamente!`, "success");
     closeModal();
     loadPets();
@@ -311,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     localStorage.setItem("mascotas", JSON.stringify(mascotas));
-    console.log("✅ Mascota actualizada:", mascotas[index]);
+    
     showNotification(`✅ ${mascotaData.nombre} fue actualizado exitosamente`, "success");
     
     closeModal();
@@ -355,9 +352,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== CARGAR MASCOTAS =====
   function loadPets() {
     const mascotas = JSON.parse(localStorage.getItem("mascotas") || "[]");
-    const userPets = mascotas.filter(pet => pet.dueño === currentUser.correo);
+    const userPets = mascotas.filter(pet =>
+      pet.dueño === correoUsuario || pet.owner === correoUsuario || pet.userId === currentUser.id
+    );
 
-    console.log(`📊 Mascotas del usuario: ${userPets.length}`);
+    
 
     // Actualizar contadores
     const count = userPets.length;
@@ -436,17 +435,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Agregar event listeners
     document.querySelectorAll(".edit-pet").forEach(btn => {
-      btn.addEventListener("click", (e) => {
+        btn.addEventListener("click", (e) => {
         const petId = e.target.closest("button").dataset.id;
-        console.log("🖱️ Editando mascota:", petId);
         openModal(petId);
       });
     });
 
     document.querySelectorAll(".delete-pet").forEach(btn => {
-      btn.addEventListener("click", (e) => {
+        btn.addEventListener("click", (e) => {
         const petId = e.target.closest("button").dataset.id;
-        console.log("🖱️ Eliminando mascota:", petId);
         deletePet(petId);
       });
     });
@@ -467,7 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (confirmed) {
       const newMascotas = mascotas.filter(p => p.id !== petId);
       localStorage.setItem("mascotas", JSON.stringify(newMascotas));
-      console.log("🗑️ Mascota eliminada:", pet.nombre);
+      
       showNotification(`🗑️ ${pet.nombre} fue eliminado`, "info");
       loadPets();
     }
@@ -521,6 +518,232 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===== INICIALIZAR =====
-  console.log("🚀 Cargando mascotas...");
+  
   loadPets();
+  // Cargar eventos próximos para el usuario
+  loadUpcomingEvents();
+  // Inicializar notificaciones
+  initNotifications();
 });
+
+// ===== FUNCIONES DE EVENTOS PRÓXIMOS =====
+function getAllUpcomingEvents() {
+  const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+  const correoUsuario = currentUser.correo || currentUser.email || null;
+
+  // Obtener mascotas del usuario
+  const todasMascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
+  const userPets = todasMascotas.filter(p =>
+    p.dueño === correoUsuario || p.owner === correoUsuario || p.userId === currentUser.id
+  );
+  const userPetIds = userPets.map(p => p.id);
+
+  // Cargar citas
+  const todasCitas = JSON.parse(localStorage.getItem('citas') || '[]');
+  const now = new Date();
+  const upcomingCitas = todasCitas
+    .filter(c => userPetIds.includes(c.mascotaId))
+    .map(c => ({
+      type: 'cita',
+      id: c.id,
+      title: c.nombreMascota || 'Cita',
+      subtitle: c.tipo || '',
+      date: c.fecha,
+      time: c.hora,
+      datetime: new Date(`${c.fecha}T${c.hora}`),
+      raw: c
+    }))
+    .filter(e => !isNaN(e.datetime) && e.datetime >= now);
+
+  // Cargar vacunas próximas (nextDoseDate)
+  const todasVacunas = JSON.parse(localStorage.getItem('vacunas') || '[]');
+  const upcomingVacunas = todasVacunas
+    .filter(v => (v.userId === correoUsuario) || userPetIds.includes(v.petId))
+    .map(v => ({
+      type: 'vacuna',
+      id: v.id,
+      title: v.vaccineName || 'Vacuna',
+      subtitle: (v.petId ? (userPets.find(p=>p.id===v.petId)?.nombre || '') : ''),
+      date: v.nextDoseDate || v.applicationDate,
+      time: '00:00',
+      datetime: v.nextDoseDate ? new Date(v.nextDoseDate) : (v.applicationDate ? new Date(v.applicationDate) : null),
+      raw: v
+    }))
+    .filter(e => e.datetime && !isNaN(e.datetime) && e.datetime >= now);
+
+  // Cargar recordatorios próximos
+  const todosRecordatorios = JSON.parse(localStorage.getItem('recordatorios') || '[]');
+  const upcomingRecordatorios = todosRecordatorios
+    .filter(r => userPetIds.includes(r.mascotaId))
+    .map(r => ({
+      type: 'recordatorio',
+      id: r.id,
+      title: userPets.find(p=>p.id===r.mascotaId)?.nombre || 'Recordatorio',
+      subtitle: r.titulo || r.motivo || '',
+      date: r.fecha,
+      time: r.hora || '00:00',
+      datetime: new Date(`${r.fecha}T${r.hora || '00:00'}`),
+      raw: r
+    }))
+    .filter(e => !isNaN(e.datetime) && e.datetime >= now && !e.raw.completado);
+
+  // Unir y ordenar
+  const allEvents = [...upcomingCitas, ...upcomingVacunas, ...upcomingRecordatorios]
+    .sort((a,b) => a.datetime - b.datetime);
+
+  // Retornar estructura útil
+  return { allEvents, upcomingVacunas, userPets };
+}
+
+function loadUpcomingEvents() {
+  try {
+    const eventsListEl = document.getElementById('eventsList');
+    const pendingVaccinesEl = document.getElementById('pendingVaccines');
+    const upcomingAppointmentsEl = document.getElementById('upcomingAppointments');
+
+    const { allEvents, upcomingVacunas } = getAllUpcomingEvents();
+
+    // Actualizar contadores
+    if (pendingVaccinesEl) pendingVaccinesEl.textContent = upcomingVacunas.length;
+    if (upcomingAppointmentsEl) upcomingAppointmentsEl.textContent = allEvents.length;
+
+    // Renderizar lista (máx 5)
+    if (!eventsListEl) return;
+    if (allEvents.length === 0) {
+      eventsListEl.innerHTML = `<div style="padding:20px;color:#666;text-align:center;">No hay eventos próximos</div>`;
+      updateNotificationBadge(allEvents);
+      return;
+    }
+
+    const itemsToShow = allEvents.slice(0,5);
+    eventsListEl.innerHTML = itemsToShow.map(ev => {
+      const dateStr = formatEventDate(ev.datetime);
+      const icon = ev.type === 'cita' ? '<i class="fas fa-calendar-check"></i>' : (ev.type === 'vacuna' ? '<i class="fas fa-syringe"></i>' : '<i class="fas fa-bell"></i>');
+      // Construir enlace a la página de citas. Incluye fecha y, si existe, id y tipo.
+      const href = `citas.html?date=${encodeURIComponent(ev.date)}&type=${encodeURIComponent(ev.type)}${ev.id ? `&id=${encodeURIComponent(ev.id)}` : ''}`;
+      return `
+        <a class="event-card" href="${href}">
+          <div class="event-date">${dateStr}</div>
+          <div class="event-info">
+            <div class="event-title">${icon} ${ev.title}</div>
+            <div class="event-sub">${ev.subtitle}</div>
+          </div>
+        </a>
+      `;
+    }).join('');
+
+    // Actualizar contador de notificaciones
+    updateNotificationBadge(allEvents);
+
+  } catch (err) {
+    console.error('Error cargando eventos próximos', err);
+  }
+}
+
+// ===== Notificaciones: panel y contador =====
+function initNotifications() {
+  if (!notificationBtn) return;
+  notificationBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleNotificationPanel();
+  });
+
+  // Cerrar panel al hacer click fuera
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('notificationPanel');
+    if (!panel) return;
+    if (!panel.contains(e.target) && !notificationBtn.contains(e.target)) {
+      panel.remove();
+    }
+  });
+
+  // Actualizar badge inicialmente
+  const { allEvents } = getAllUpcomingEvents();
+  updateNotificationBadge(allEvents);
+}
+
+function updateNotificationBadge(allEvents) {
+  try {
+    if (!notificationBadge) return;
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+    const correoUsuario = currentUser.correo || currentUser.email || null;
+    const key = `lastNotificationsRead_${correoUsuario || 'guest'}`;
+    const lastRead = parseInt(localStorage.getItem(key) || '0', 10);
+
+    const unread = allEvents ? allEvents.filter(ev => ev.datetime.getTime() > (lastRead || 0)).length : 0;
+
+    if (unread > 0) {
+      notificationBadge.textContent = unread;
+      notificationBadge.style.display = 'inline-block';
+    } else {
+      notificationBadge.textContent = '';
+      notificationBadge.style.display = 'none';
+    }
+  } catch (e) {
+    // silent
+  }
+}
+
+function toggleNotificationPanel() {
+  const existing = document.getElementById('notificationPanel');
+  if (existing) { existing.remove(); return; }
+
+  const { allEvents } = getAllUpcomingEvents();
+  renderNotificationPanel(allEvents);
+  // Marcar como leídas al abrir
+  const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+  const correoUsuario = currentUser.correo || currentUser.email || null;
+  const key = `lastNotificationsRead_${correoUsuario || 'guest'}`;
+  localStorage.setItem(key, String(Date.now()));
+  updateNotificationBadge(allEvents);
+}
+
+function renderNotificationPanel(allEvents) {
+  const panel = document.createElement('div');
+  panel.id = 'notificationPanel';
+  panel.className = 'notification-panel';
+  panel.style.position = 'absolute';
+  panel.style.right = '16px';
+  panel.style.top = '64px';
+  panel.style.width = '320px';
+  panel.style.maxHeight = '60vh';
+  panel.style.overflow = 'auto';
+  panel.style.background = '#fff';
+  panel.style.boxShadow = '0 6px 18px rgba(0,0,0,0.12)';
+  panel.style.borderRadius = '10px';
+  panel.style.zIndex = '9999';
+  panel.style.padding = '8px';
+
+  if (!allEvents || allEvents.length === 0) {
+    panel.innerHTML = `<div style="padding:16px;color:#666;text-align:center;">No hay notificaciones</div>`;
+    document.body.appendChild(panel);
+    return;
+  }
+
+  const items = allEvents.slice(0,10).map(ev => {
+    const dateStr = formatEventDate(ev.datetime);
+    const icon = ev.type === 'cita' ? '<i class="fas fa-calendar-check"></i>' : (ev.type === 'vacuna' ? '<i class="fas fa-syringe"></i>' : '<i class="fas fa-bell"></i>');
+    const href = `citas.html?date=${encodeURIComponent(ev.date)}&type=${encodeURIComponent(ev.type)}${ev.id ? `&id=${encodeURIComponent(ev.id)}` : ''}`;
+    return `
+      <a class="notification-item" href="${href}" style="display:flex;gap:10px;padding:10px;border-radius:8px;text-decoration:none;color:inherit;align-items:center;border:1px solid rgba(0,0,0,0.04);margin-bottom:6px;">
+        <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#f5f5f6;border-radius:8px;">${icon}</div>
+        <div style="flex:1;">
+          <div style="font-weight:600">${ev.title}</div>
+          <div style="font-size:12px;color:#666">${ev.subtitle} · ${dateStr}</div>
+        </div>
+      </a>
+    `;
+  }).join('');
+
+  panel.innerHTML = `<div style="padding:8px 12px;border-bottom:1px solid rgba(0,0,0,0.06);font-weight:700">Notificaciones</div><div style="padding:8px;">${items}</div>`;
+  document.body.appendChild(panel);
+}
+
+function formatEventDate(d) {
+  try {
+    const opts = { day: '2-digit', month: 'short' };
+    return d.toLocaleDateString('es-ES', opts);
+  } catch (e) {
+    return '';
+  }
+}

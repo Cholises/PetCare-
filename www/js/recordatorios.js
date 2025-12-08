@@ -1,7 +1,7 @@
 // js/recordatorios.js - Sistema de Recordatorios
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🔔 Inicializando sistema de recordatorios...');
+    
     
     // ===== VERIFICAR SESIÓN =====
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -12,7 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    console.log('✅ Usuario logueado:', currentUser.nombre);
+    
+
+    // Email del usuario (compatibilidad `correo` / `email`)
+    const correoUsuario = currentUser.correo || currentUser.email || null;
     
     // ===== VARIABLES GLOBALES =====
     let recordatorios = [];
@@ -34,16 +37,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadData() {
         // Cargar mascotas del usuario
         const todasMascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
-        mascotas = todasMascotas.filter(m => m.dueño === currentUser.correo);
+        mascotas = todasMascotas.filter(m =>
+            m.dueño === correoUsuario || m.owner === correoUsuario || m.userId === currentUser.id
+        );
         
-        console.log(`🐾 Mascotas del usuario: ${mascotas.length}`);
+        
         
         // Cargar recordatorios
         const todosRecordatorios = JSON.parse(localStorage.getItem('recordatorios') || '[]');
         const mascotasIds = mascotas.map(m => m.id);
         recordatorios = todosRecordatorios.filter(r => mascotasIds.includes(r.mascotaId));
         
-        console.log(`🔔 Recordatorios: ${recordatorios.length}`);
+        
         
         // Verificar recordatorios vencidos y actualizarlos
         checkVencidos();
@@ -94,9 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (addBtnNav) {
             addBtnNav.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal();
-            });
+                    e.preventDefault();
+                    openModal();
+                });
         }
         
         if (addBtnEmpty) {
@@ -308,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         recordatorios.push(nuevoRecordatorio);
         saveRecordatorios();
         
-        console.log('✅ Recordatorio creado:', nuevoRecordatorio);
+        
         showNotification(`✅ Recordatorio creado para ${recordatorioData.nombreMascota}`, 'success');
         
         closeModal();
@@ -331,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         saveRecordatorios();
-        console.log('✅ Recordatorio actualizado:', recordatorios[index]);
+        
         showNotification('✅ Recordatorio actualizado correctamente', 'success');
         
         closeModal();
@@ -787,5 +792,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ===== INICIAR APLICACIÓN =====
     init();
-    console.log('✅ Sistema de recordatorios inicializado');
 });

@@ -2,7 +2,7 @@
 // js/vacunas.js - Sistema de control de vacunas
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("🐾 Inicializando sistema de vacunas...");
+  
 
   // Verificar sesión
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -36,10 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let editingVaccineId = null;
 
+  // Email del usuario (compatibilidad `correo` / `email`)
+  const correoUsuario = currentUser.correo || currentUser.email || null;
+
   // ===== CARGAR MASCOTAS EN SELECTORES =====
   function loadPets() {
     const mascotas = JSON.parse(localStorage.getItem("mascotas") || "[]");
-    const userPets = mascotas.filter(pet => pet.dueño === currentUser.correo);
+    const userPets = mascotas.filter(pet =>
+      pet.dueño === correoUsuario || pet.owner === correoUsuario || pet.userId === currentUser.id
+    );
 
     // Selector de filtro
     petSelector.innerHTML = '<option value="">Todas las mascotas</option>';
@@ -110,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (quickAddBtn) {
     quickAddBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      console.log("🎯 Botón NAV presionado - Abriendo modal...");
       openModal();
     });
   }
@@ -180,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
       veterinarian,
       batchNumber,
       notes,
-      userId: currentUser.correo
+      userId: correoUsuario
     };
 
     if (editingVaccineId) {
@@ -202,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
     vaccines.push(vaccine);
     localStorage.setItem("vacunas", JSON.stringify(vaccines));
 
-    console.log("✅ Vacuna creada:", vaccine);
+    
     showNotification(`🎉 Vacuna registrada exitosamente`, "success");
     closeModal();
     loadVaccines();
@@ -225,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     localStorage.setItem("vacunas", JSON.stringify(vaccines));
-    console.log("✅ Vacuna actualizada");
+    
     showNotification(`✅ Vacuna actualizada exitosamente`, "success");
     closeModal();
     loadVaccines();
@@ -254,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mascotas = JSON.parse(localStorage.getItem("mascotas") || "[]");
     const selectedPet = petSelector.value;
 
-    let userVaccines = vaccines.filter(v => v.userId === currentUser.correo);
+    let userVaccines = vaccines.filter(v => v.userId === correoUsuario || v.userId === currentUser.correo);
 
     if (selectedPet) {
       userVaccines = userVaccines.filter(v => v.petId === selectedPet);
@@ -432,6 +436,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== INICIALIZAR =====
   loadPets();
   loadVaccines();
-  
-  console.log("✅ Sistema de vacunas inicializado correctamente");
 });

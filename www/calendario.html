@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calendario - PetCare+</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/pages/calendar.css">
+  <!-- eliminado: anteriormente referenciaba css/pages/calendar.css (no existe) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -19,6 +19,18 @@
       <h2>Organiza tus eventos</h2>
       <p>Consulta tus próximas citas, vacunas o actividades del mes 📅.</p>
     </div>
+    <div class="card">
+      <div id="calendarApp">
+        <div class="calendar-header">
+          <button id="prevMonth" class="btn">&lt;</button>
+          <h3 id="monthLabel">Mes Año</h3>
+          <button id="nextMonth" class="btn">&gt;</button>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+        <div id="dayEvents" class="day-events"></div>
+      </div>
+    </div>
+    <script src="js/calendario.js"></script>
   </main>
 </body>
 </html>

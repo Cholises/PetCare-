@@ -1,7 +1,7 @@
 // js/historial.js - Sistema de Historial Médico CORREGIDO
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('📋 Inicializando sistema de historial médico...');
+    
     
     // ===== VERIFICAR SESIÓN =====
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -12,7 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    console.log('✅ Usuario logueado:', currentUser.nombre);
+    
+
+    // Email del usuario (compatibilidad con `correo` / `email`)
+    const correoUsuario = currentUser.correo || currentUser.email || null;
     
     // ===== VARIABLES GLOBALES =====
     let registros = [];
@@ -29,18 +32,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ===== CARGAR DATOS =====
     function loadData() {
-        // Cargar mascotas del usuario
+        // Cargar mascotas del usuario (compatibilidad con varias claves)
         const todasMascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
-        mascotas = todasMascotas.filter(m => m.dueño === currentUser.correo);
+        mascotas = todasMascotas.filter(m =>
+            m.dueño === correoUsuario || m.owner === correoUsuario || m.userId === currentUser.id
+        );
         
-        console.log(`🐾 Mascotas del usuario: ${mascotas.length}`);
+        
         
         // Cargar registros médicos
         const todosRegistros = JSON.parse(localStorage.getItem('historialMedico') || '[]');
         const mascotasIds = mascotas.map(m => m.id);
         registros = todosRegistros.filter(r => mascotasIds.includes(r.mascotaId));
         
-        console.log(`📋 Registros médicos: ${registros.length}`);
+        
     }
     
     // ===== GUARDAR REGISTROS =====
@@ -69,16 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (addBtnNav) {
             addBtnNav.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('🔘 Botón NAV clickeado');
-                openModal();
-            });
+                    e.preventDefault();
+                    openModal();
+                });
         }
         
         if (addBtnEmpty) {
             addBtnEmpty.addEventListener('click', (e) => {
                 e.preventDefault();
-                console.log('🔘 Botón EMPTY STATE clickeado');
                 openModal();
             });
         }
@@ -130,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ===== MODAL =====
     function openModal(registroId = null) {
-        console.log('🚀 Abriendo modal...', { registroId, mascotasCount: mascotas.length });
+        
         
         if (!modal) {
             console.error('❌ Modal no encontrado en el DOM');
@@ -169,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         loadMascotaSelect();
         modal.classList.add('show');
-        console.log('✅ Modal abierto');
     }
     
     function closeModal() {
@@ -177,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('show');
         if (registroForm) registroForm.reset();
         editingRegistroId = null;
-        console.log('❌ Modal cerrado');
     }
     
     function closeDetallesModal() {
@@ -199,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mascotaSelect.appendChild(option);
         });
         
-        console.log(`✅ Select cargado con ${mascotas.length} mascotas`);
+        
     }
     
     // ===== CARGAR FILTROS =====
@@ -289,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
         registros.push(nuevoRegistro);
         saveRegistros();
         
-        console.log('✅ Registro creado:', nuevoRegistro);
+        
         showNotification(`✅ Registro guardado para ${registroData.nombreMascota}`, 'success');
         
         closeModal();
@@ -312,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         saveRegistros();
-        console.log('✅ Registro actualizado:', registros[index]);
+        
         showNotification('✅ Registro actualizado correctamente', 'success');
         
         closeModal();
@@ -666,5 +667,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ===== INICIAR APLICACIÓN =====
     init();
-    console.log('✅ Sistema de historial médico inicializado');
 });

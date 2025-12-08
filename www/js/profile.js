@@ -1,7 +1,7 @@
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('📱 Inicializando página de perfil...');
+    
 
     // ===== VARIABLES GLOBALES =====
     let currentUser = null;
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const user = JSON.parse(userData);
-            console.log('✅ Usuario cargado:', user);
+            
             return user;
         } catch (error) {
             console.error('❌ Error al cargar usuario:', error);
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadUserMascotas(currentUser) {
         try {
             const todasMascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
-            console.log('📊 Total de mascotas en sistema:', todasMascotas.length);
+            
 
             // Filtrar mascotas del usuario actual
             const correoUsuario = currentUser.correo || currentUser.email;
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 m.dueño === correoUsuario || m.owner === correoUsuario || m.userId === currentUser.id
             );
 
-            console.log(`✅ Mascotas del usuario (${correoUsuario}):`, mascotasUsuario.length);
+            
             return mascotasUsuario;
         } catch (error) {
             console.error('❌ Error al cargar mascotas:', error);
@@ -54,14 +54,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadUserHistorial(mascotas) {
         try {
             const todoHistorial = JSON.parse(localStorage.getItem('historialMedico') || '[]');
-            console.log('📋 Total de registros médicos:', todoHistorial.length);
+            
 
             if (mascotas.length === 0) return [];
 
             const mascotasIds = mascotas.map(m => m.id);
             const historialUsuario = todoHistorial.filter(r => mascotasIds.includes(r.mascotaId));
 
-            console.log('✅ Historial médico del usuario:', historialUsuario.length);
+            
             return historialUsuario;
         } catch (error) {
             console.error('❌ Error al cargar historial:', error);
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('edit-email').value = correo;
         document.getElementById('edit-phone').value = telefono;
 
-        console.log('✅ Datos de usuario mostrados');
+        
     }
 
     function obtenerIniciales(nombre) {
@@ -117,6 +117,24 @@ document.addEventListener('DOMContentLoaded', function () {
             return partes[0][0].toUpperCase();
         }
         return 'U';
+    }
+
+    // Devuelve una imagen por defecto (data URI SVG) según el tipo de mascota
+    function getPetDefaultImage(tipo) {
+        const icons = {
+            perro: '🐕',
+            gato: '🐱',
+            ave: '🦜',
+            conejo: '🐰',
+            hamster: '🐹',
+            pez: '🐠',
+            reptil: '🦎',
+            otro: '🐾'
+        };
+        const key = (tipo || '').toString().toLowerCase();
+        const emoji = icons[key] || '🐾';
+        const svg = `<?xml version="1.0" encoding="UTF-8"?><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='220' font-family='Segoe UI, Roboto, Noto Color Emoji'>${emoji}</text></svg>`;
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
 
     function displayMascotas(mascotas, historial) {
@@ -168,10 +186,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return `
                         <div class="pet-card" data-id="${mascota.id}">
-                            <img src="${fotoMascota}" 
-                                 alt="${mascota.nombre}" 
-                                 class="pet-image"
-                                 onerror="this.src='https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
+                               <img src="${fotoMascota}" 
+                                   alt="${mascota.nombre}" 
+                                   class="pet-image"
+                                   onerror="this.src='https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
                             <div class="pet-info">
                                 <h3 class="pet-name">${mascota.nombre || 'Sin nombre'}</h3>
                                 <span class="pet-type">${mascota.tipo || mascota.especie || 'Mascota'}</span>
@@ -195,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
         }).join('');
 
-        console.log(`✅ ${mascotas.length} mascotas mostradas`);
+        
     }
 
     function displayRecentHistory(historial, mascotas) {
@@ -269,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
         }
 
-        console.log(`✅ ${historialReciente.length} registros recientes mostrados`);
+        
     }
 
     // ===== FUNCIONES UTILITARIAS =====
@@ -306,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 300);
         }, 3000);
 
-        console.log(`📢 Notificación: ${message}`);
+        
     }
 
     // ===== FUNCIONES DE GESTIÓN DE MASCOTAS =====
@@ -570,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ===== INICIALIZAR APLICACIÓN =====
     function init() {
-        console.log('🚀 Iniciando aplicación...');
+        
 
         // 1. Cargar usuario actual
         currentUser = loadCurrentUser();
@@ -593,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // 6. Configurar eventos
         setupEventListeners();
 
-        console.log('✅ Aplicación inicializada correctamente');
+        
     }
 
     // Iniciar la aplicación

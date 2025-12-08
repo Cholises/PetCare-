@@ -43,6 +43,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Normalizar campos del usuario (asegurar `correo` además de `email`)
+        userFound.correo = userFound.correo || userFound.email || null;
+        userFound.email = userFound.email || userFound.correo || null;
+        userFound.nombre = userFound.nombre || userFound.name || (userFound.nombreCompleto || '').split(' ')[0] || '';
+
         // Guardar usuario logueado
         localStorage.setItem("currentUser", JSON.stringify(userFound));
 

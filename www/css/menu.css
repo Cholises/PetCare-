@@ -32,10 +32,8 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: var(--bg-light);
     min-height: 100vh;
-<<<<<<< HEAD
-=======
-    overflow: hidden;
->>>>>>> ea26268efb3a189a6386d552c26d066151d7a14c
+      /* Allow vertical scrolling on the page */
+      overflow-y: auto;
     color: #333;
     padding-bottom: 80px;
 }
@@ -58,6 +56,16 @@ body {
     align-items: center;
 }
 
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .user-greeting h1 {
     font-size: 24px;
     color: var(--text-dark);
@@ -77,10 +85,7 @@ body {
     color: var(--text-gray);
 }
 
-.header-actions {
-    display: flex;
-    gap: 12px;
-}
+/* .header-actions moved above (absolute) */
 
 .btn-icon {
     width: 44px;
@@ -417,6 +422,13 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Soporte para enlaces usados en la lista de eventos (hacer toda la tarjeta clicable) */
+.events-list a.event-card {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+}
+
 .event-card:hover {
     transform: translateX(4px);
     box-shadow: var(--shadow-lg);
@@ -560,6 +572,13 @@ body {
         grid-template-columns: 1fr;
     }
 
+    /* En pantallas pequeñas volver a flujo normal para evitar solapamientos */
+    .header-actions {
+      position: static;
+      transform: none;
+      margin-left: auto;
+    }
+
     .pets-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
@@ -593,14 +612,9 @@ body {
     .nav-item i {
         font-size: 20px;
     }
-<<<<<<< HEAD
 }
 
-/* ==========================================
-   ESTILOS PARA MODAL DE MASCOTAS Y TARJETAS
-   ========================================== */
 
-/* ===== MODAL OVERLAY ===== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1214,6 +1228,4 @@ body {
     left: 20px;
     right: 20px;
   }
-=======
->>>>>>> ea26268efb3a189a6386d552c26d066151d7a14c
 }
