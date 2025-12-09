@@ -1062,11 +1062,14 @@ form {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
+    justify-items: center;
     background: white;
     padding: 0.5rem 0;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 150;
     height: 70px;
+    gap: 10px;
 }
 
 .nav-item {
@@ -1079,8 +1082,12 @@ form {
     text-decoration: none;
     font-size: 0.75rem;
     transition: all 0.3s ease;
-    flex: 1;
     padding: 0.5rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
 }
 
 .nav-item i {
@@ -1092,22 +1099,14 @@ form {
     color: #7c3aed;
 }
 
-/* BOTÓN FLOTANTE DE AGREGAR (FAB) */
-.nav-item-center {
-    position: fixed;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
+/* BOTÓN DE AGREGAR EN EL CENTRO */
+.nav-item.nav-item-center {
     padding: 0;
-    z-index: 140;
 }
 
 .add-btn-circle {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
@@ -1117,16 +1116,15 @@ form {
     font-size: 1.5rem;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     transition: all 0.3s ease;
-    border: 4px solid white; /* Borde blanco para destacar */
 }
 
 .nav-item-center:hover .add-btn-circle {
-    transform: scale(1.1) rotate(90deg);
+    transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
 }
 
 .nav-item-center:active .add-btn-circle {
-    transform: scale(0.95) rotate(90deg);
+    transform: scale(0.95);
 }
 
 /* ELIMINAR el botón flotante anterior */
