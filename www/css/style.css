@@ -39,6 +39,24 @@ header {
   justify-content: space-between;
 }
 
+.page-header {
+  background-color: var(--primary-purple);
+  color: white;
+  padding: 15px 20px;
+  padding-left: max(15px, calc(20px + env(safe-area-inset-left)));
+  padding-right: max(15px, calc(20px + env(safe-area-inset-right)));
+  padding-top: max(15px, calc(15px + env(safe-area-inset-top)));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-header h1 {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+}
+
 h1, h2, h3 {
   font-weight: 600;
   margin: 0;

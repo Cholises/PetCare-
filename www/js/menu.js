@@ -248,6 +248,30 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // ✅ VALIDACIÓN: Longitud máxima del nombre (50 caracteres)
+      if (nombre.length > 50) {
+        showNotification("⚠️ El nombre no puede exceder 50 caracteres", "error");
+        nombreInput.focus();
+        return;
+      }
+
+      // ✅ VALIDACIÓN: Verificar que no exista otra mascota con el mismo nombre
+      const mascotas = JSON.parse(localStorage.getItem("mascotas") || "[]");
+      const mascotasDelUsuario = mascotas.filter(m => 
+        (m.dueño === correoUsuario || m.owner === correoUsuario || m.userId === correoUsuario)
+      );
+      
+      const nombreDuplicado = mascotasDelUsuario.find(m => 
+        m.nombre.toLowerCase() === nombre.toLowerCase() && m.id !== editingPetId
+      );
+      
+      if (nombreDuplicado) {
+        showNotification(`⚠️ Ya tienes una mascota llamada "${nombre}". Por favor elige otro nombre.`, "error");
+        nombreInput.focus();
+        nombreInput.select();
+        return;
+      }
+
       // Crear objeto mascota
       const razaInput = document.getElementById("petBreed");
       const edadInput = document.getElementById("petAge");
@@ -256,16 +280,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const colorInput = document.getElementById("petColor");
       const notasInput = document.getElementById("petNotes");
 
+      // ✅ VALIDACIÓN: Longitud máxima de raza (50 caracteres)
+      const raza = razaInput ? razaInput.value.trim() : "";
+      if (raza.length > 50) {
+        showNotification("⚠️ La raza no puede exceder 50 caracteres", "error");
+        razaInput.focus();
+        return;
+      }
+
+      // ✅ VALIDACIÓN: Longitud máxima de color (30 caracteres)
+      const color = colorInput ? colorInput.value.trim() : "";
+      if (color.length > 30) {
+        showNotification("⚠️ El color no puede exceder 30 caracteres", "error");
+        colorInput.focus();
+        return;
+      }
+
+      // ✅ VALIDACIÓN: Longitud máxima de notas (500 caracteres)
+      const notas = notasInput ? notasInput.value.trim() : "";
+      if (notas.length > 500) {
+        showNotification("⚠️ Las notas no pueden exceder 500 caracteres", "error");
+        notasInput.focus();
+        return;
+      }
+
       const mascotaData = {
         nombre: nombre,
         tipo: tipo,
-        raza: razaInput ? razaInput.value.trim() || "No especificada" : "No especificada",
+        raza: raza || "No especificada",
         edad: edadInput ? edadInput.value : "",
         peso: pesoInput ? pesoInput.value : "",
         genero: generoInput ? generoInput.value || "No especificado" : "No especificado",
-        color: colorInput ? colorInput.value.trim() : "",
+        color: color,
         foto: (previewImage && previewImage.src) ? previewImage.src : getDefaultPetIcon(tipo),
-        notas: notasInput ? notasInput.value.trim() : "",
+        notas: notas,
         dueño: correoUsuario,
         owner: correoUsuario
       };

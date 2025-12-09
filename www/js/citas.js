@@ -255,32 +255,75 @@ document.addEventListener('DOMContentLoaded', () => {
         const recordatorio1dia = document.getElementById('reminder1day').checked;
         const recordatorio1hora = document.getElementById('reminder1hour').checked;
         
-        // Validaciones
+        // ✅ VALIDACIÓN: Mascota seleccionada
         if (!mascotaId) {
-            showNotification('⚠️ Selecciona una mascota', 'error');
+            showNotification('⚠️ Por favor selecciona una mascota', 'error');
+            document.getElementById('petSelect').focus();
             return;
         }
         
+        // ✅ VALIDACIÓN: Fecha y hora completas
         if (!fecha || !hora) {
-            showNotification('⚠️ Completa la fecha y hora', 'error');
+            showNotification('⚠️ Completa la fecha y hora de la cita', 'error');
+            if (!fecha) document.getElementById('appointmentDate').focus();
+            else document.getElementById('appointmentTime').focus();
             return;
         }
         
+        // ✅ VALIDACIÓN: Fecha pasada - rechazo inmediato
+        const fechaCita = new Date(`${fecha}T${hora}`);
+        const ahora = new Date();
+        
+        if (fechaCita < ahora) {
+            showNotification('❌ No puedes agendar citas en fechas pasadas. Por favor selecciona una fecha futura.', 'error');
+            document.getElementById('appointmentDate').focus();
+            return;
+        }
+        
+        // ✅ VALIDACIÓN: Veterinaria ingresada
         if (!veterinaria) {
-            showNotification('⚠️ Ingresa la veterinaria', 'error');
+            showNotification('⚠️ Ingresa el nombre de la veterinaria o clínica', 'error');
+            document.getElementById('veterinary').focus();
             return;
         }
         
+        // ✅ VALIDACIÓN: Tipo de cita seleccionado
         if (!tipo) {
             showNotification('⚠️ Selecciona el tipo de cita', 'error');
+            document.getElementById('appointmentType').focus();
             return;
         }
         
-        // Obtener datos de la mascota
+        // ✅ VALIDACIÓN: Obtener datos de la mascota
         const mascota = mascotas.find(m => m.id === mascotaId);
         if (!mascota) {
-            showNotification('⚠️ Mascota no encontrada', 'error');
+            showNotification('⚠️ Error: Mascota no encontrada en el sistema', 'error');
             return;
+        }
+        
+        // ✅ VALIDACIÓN: Verificar horarios ocupados/bloqueados
+        const horarioOcupado = citas.find(c => 
+            c.id !== editingAppointmentId && // Excluir la cita actual si estamos editando
+            c.fecha === fecha && 
+            c.hora === hora && 
+            c.veterinaria.toLowerCase() === veterinaria.toLowerCase() &&
+            c.estado !== 'cancelada'
+        );
+        
+        if (horarioOcupado) {
+            const confirmar = confirm(
+                `⚠️ HORARIO OCUPADO\n\n` +
+                `Ya tienes una cita programada para:\n` +
+                `📅 ${formatDateLong(fecha)} a las ${hora}\n` +
+                `🏥 ${veterinaria}\n` +
+                `🐾 Mascota: ${horarioOcupado.nombreMascota}\n\n` +
+                `¿Deseas continuar de todas formas?`
+            );
+            
+            if (!confirmar) {
+                document.getElementById('appointmentTime').focus();
+                return;
+            }
         }
         
         const citaData = {
@@ -316,6 +359,8 @@ document.addEventListener('DOMContentLoaded', () => {
         citas.push(nuevaCita);
         saveCitas();
         
+        // ✅ Programar notificaciones recordatorias
+        programarRecordatorios(nuevaCita);
         
         showNotification(`🎉 Cita agendada para ${citaData.nombreMascota}`, 'success');
         
@@ -459,11 +504,17 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <button class="action-btn complete" onclick="completeAppointment('${cita.id}')" title="Marcar como completada">
                                     <i class="fas fa-check"></i>
                                 </button>
+                                <button class="action-btn reschedule" onclick="rescheduleAppointment('${cita.id}')" title="Reprogramar cita">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <button class="action-btn cancel" onclick="cancelAppointment('${cita.id}')" title="Cancelar cita">
+                                    <i class="fas fa-ban"></i>
+                                </button>
                             ` : ''}
                             <button class="action-btn edit" onclick="editAppointment('${cita.id}')" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="action-btn delete" onclick="deleteAppointment('${cita.id}')" title="Eliminar">
+                            <button class="action-btn delete" onclick="deleteAppointment('${cita.id}')" title="Eliminar permanentemente">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -620,17 +671,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
+    // ✅ CANCELAR CITA (no elimina, solo cambia estado)
+    window.cancelAppointment = function(citaId) {
+        const cita = citas.find(c => c.id === citaId);
+        if (!cita) return;
+        
+        const motivo = prompt(
+            `¿Estás seguro de cancelar la cita de ${cita.nombreMascota}?\n\n` +
+            `📅 ${formatDateLong(cita.fecha)} a las ${cita.hora}\n` +
+            `🏥 ${cita.veterinaria}\n\n` +
+            `Ingresa el motivo de cancelación (opcional):`
+        );
+        
+        if (motivo !== null) { // null = usuario canceló el prompt
+            cita.estado = 'cancelada';
+            cita.motivoCancelacion = motivo || 'Sin motivo especificado';
+            cita.fechaCancelacion = new Date().toISOString();
+            saveCitas();
+            renderAppointments();
+            renderCalendar();
+            updateStats();
+            showNotification('❌ Cita cancelada exitosamente', 'info');
+        }
+    };
+    
+    // ✅ REPROGRAMAR CITA
+    window.rescheduleAppointment = function(citaId) {
+        const cita = citas.find(c => c.id === citaId);
+        if (!cita) return;
+        
+        if (confirm(
+            `¿Deseas reprogramar la cita de ${cita.nombreMascota}?\n\n` +
+            `📅 Fecha actual: ${formatDateLong(cita.fecha)} - ${cita.hora}\n` +
+            `🏥 ${cita.veterinaria}\n\n` +
+            `Se abrirá el formulario para que selecciones una nueva fecha y hora.`
+        )) {
+            // Marcar que estamos reprogramando
+            cita.reprogramada = true;
+            cita.fechaOriginal = cita.fecha;
+            cita.horaOriginal = cita.hora;
+            openModal(citaId);
+        }
+    };
+    
     window.deleteAppointment = function(citaId) {
         const cita = citas.find(c => c.id === citaId);
         if (!cita) return;
         
-        if (confirm(`¿Eliminar la cita de ${cita.nombreMascota}?`)) {
+        if (confirm(
+            `⚠️ ¿ELIMINAR PERMANENTEMENTE?\n\n` +
+            `Esta acción eliminará completamente la cita de ${cita.nombreMascota}\n` +
+            `📅 ${formatDateLong(cita.fecha)} a las ${cita.hora}\n\n` +
+            `Si solo deseas cancelarla, usa el botón "Cancelar Cita".\n\n` +
+            `¿Estás seguro de ELIMINAR permanentemente?`
+        )) {
             citas = citas.filter(c => c.id !== citaId);
             saveCitas();
             renderAppointments();
             renderCalendar();
             updateStats();
-            showNotification('🗑️ Cita eliminada', 'info');
+            showNotification('🗑️ Cita eliminada permanentemente', 'info');
         }
     };
     
@@ -794,6 +894,70 @@ document.addEventListener('DOMContentLoaded', () => {
         targetCitaId = urlParams.get('citaId');
     }
 
+    // ===== SISTEMA DE NOTIFICACIONES RECORDATORIAS =====
+    function programarRecordatorios(cita) {
+        if (!cita.recordatorio1dia && !cita.recordatorio1hora) return;
+        
+        const fechaCita = new Date(`${cita.fecha}T${cita.hora}`);
+        const ahora = new Date();
+        
+        // Recordatorio 1 día antes
+        if (cita.recordatorio1dia) {
+            const recordatorio1dia = new Date(fechaCita.getTime() - (24 * 60 * 60 * 1000));
+            if (recordatorio1dia > ahora) {
+                console.log(`📅 Recordatorio programado para: ${recordatorio1dia.toLocaleString()}`);
+            }
+        }
+        
+        // Recordatorio 1 hora antes
+        if (cita.recordatorio1hora) {
+            const recordatorio1hora = new Date(fechaCita.getTime() - (60 * 60 * 1000));
+            if (recordatorio1hora > ahora) {
+                console.log(`⏰ Recordatorio programado para: ${recordatorio1hora.toLocaleString()}`);
+            }
+        }
+    }
+    
+    // ✅ Verificar recordatorios pendientes al cargar la página
+    function verificarRecordatoriosPendientes() {
+        const ahora = new Date();
+        const recordatoriosMostrados = JSON.parse(localStorage.getItem('recordatoriosMostrados') || '[]');
+        
+        citas.forEach(cita => {
+            if (cita.estado !== 'pendiente') return;
+            
+            const fechaCita = new Date(`${cita.fecha}T${cita.hora}`);
+            const diferenciaMs = fechaCita - ahora;
+            const diferenciaHoras = diferenciaMs / (1000 * 60 * 60);
+            
+            const recordatorioId = `${cita.id}_${cita.fecha}_${cita.hora}`;
+            
+            // Notificar si falta 1 día (24 horas) y no se ha mostrado
+            if (cita.recordatorio1dia && diferenciaHoras <= 24 && diferenciaHoras > 23 && !recordatoriosMostrados.includes(recordatorioId + '_1dia')) {
+                showNotification(
+                    `🔔 Recordatorio: Mañana tienes cita para ${cita.nombreMascota} a las ${cita.hora} en ${cita.veterinaria}`,
+                    'warning'
+                );
+                recordatoriosMostrados.push(recordatorioId + '_1dia');
+                localStorage.setItem('recordatoriosMostrados', JSON.stringify(recordatoriosMostrados));
+            }
+            
+            // Notificar si falta 1 hora y no se ha mostrado
+            if (cita.recordatorio1hora && diferenciaHoras <= 1 && diferenciaHoras > 0 && !recordatoriosMostrados.includes(recordatorioId + '_1hora')) {
+                showNotification(
+                    `⏰ ¡URGENTE! En 1 hora tienes cita para ${cita.nombreMascota} en ${cita.veterinaria}`,
+                    'warning'
+                );
+                recordatoriosMostrados.push(recordatorioId + '_1hora');
+                localStorage.setItem('recordatoriosMostrados', JSON.stringify(recordatoriosMostrados));
+            }
+        });
+    }
+    
+    // Verificar recordatorios cada 5 minutos
+    setInterval(verificarRecordatoriosPendientes, 5 * 60 * 1000);
+    verificarRecordatoriosPendientes(); // Verificar al cargar
+    
     // ===== INICIAR APLICACIÓN =====
     init();
 });

@@ -46,6 +46,8 @@ body {
     color: var(--text-primary);
     padding-bottom: 80px;
     line-height: 1.6;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* ========================================
@@ -60,7 +62,7 @@ body {
     justify-content: space-between;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 200;
     box-shadow: 0 2px 10px var(--shadow);
 }
 
@@ -68,6 +70,8 @@ body {
     font-size: 20px;
     font-weight: 600;
     letter-spacing: -0.5px;
+    flex: 1;
+    text-align: center;
 }
 
 .back-btn, 
@@ -104,10 +108,10 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    padding: 20px;
+    padding: 16px;
     background: white;
     margin: 16px auto 16px;
-    max-width: 1100px;
+    max-width: 100%;
 }
 
 .stat-card {
@@ -175,10 +179,14 @@ body {
    ======================================== */
 .calendar-section {
     background: white;
-    padding: 20px;
-    margin: 0 auto 16px;
+    padding: 16px;
+    margin: 0 16px 16px;
     border-radius: 16px;
     box-shadow: 0 2px 8px var(--shadow);
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    z-index: 10;
 }
 
 .calendar-header {
@@ -217,7 +225,8 @@ body {
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+    gap: 4px;
+    max-width: 100%;
 }
 
 .calendar-day {
@@ -225,19 +234,21 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    border-radius: 8px;
+    font-size: 13px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
     font-weight: 500;
+    min-width: 0;
 }
 
 .calendar-day.header {
-    font-weight: 600;
-    color: var(--text-secondary);
+    font-weight: 700;
+    color: var(--primary);
     cursor: default;
     font-size: 12px;
+    background: var(--bg-primary);
 }
 
 .calendar-day.inactive {
@@ -630,6 +641,16 @@ body {
 .action-btn.complete {
     background: rgba(16, 185, 129, 0.1);
     color: var(--secondary);
+}
+
+.action-btn.reschedule {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--info);
+}
+
+.action-btn.cancel {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
 }
 
 .action-btn.edit {
@@ -1038,13 +1059,13 @@ form {
     bottom: 0;
     left: 0;
     right: 0;
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     background: white;
     padding: 0.5rem 0;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    z-index: 150;
     height: 70px;
 }
 
@@ -1071,14 +1092,17 @@ form {
     color: #7c3aed;
 }
 
-/* BOTÓN CENTRAL DE AGREGAR */
+/* BOTÓN FLOTANTE DE AGREGAR (FAB) */
 .nav-item-center {
-    position: relative;
-    margin-top: -30px; /* Lo eleva sobre el nav */
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
+    z-index: 140;
 }
 
 .add-btn-circle {
@@ -1122,6 +1146,7 @@ form {
     .stats-container {
         grid-template-columns: 1fr;
         gap: 8px;
+        padding: 12px;
     }
     
     .stat-card {
@@ -1144,7 +1169,22 @@ form {
     
     .calendar-section {
         margin: 0 12px 16px;
-        padding: 16px;
+        padding: 12px;
+    }
+    
+    .calendar-grid {
+        gap: 2px;
+    }
+    
+    .calendar-day {
+        font-size: 11px;
+        border-radius: 4px;
+    }
+    
+    .calendar-day.header {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--primary);
     }
     
     .filter-section,
@@ -1160,6 +1200,27 @@ form {
         width: 56px;
         height: 56px;
         font-size: 22px;
+    }
+}
+
+/* Móviles medianos */
+@media (max-width: 480px) and (min-width: 381px) {
+    .calendar-section {
+        padding: 14px;
+        margin: 0 14px 16px;
+    }
+    
+    .calendar-grid {
+        gap: 3px;
+    }
+    
+    .calendar-day {
+        font-size: 12px;
+        border-radius: 5px;
+    }
+    
+    .stats-container {
+        padding: 14px;
     }
 }
 

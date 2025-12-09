@@ -75,6 +75,124 @@ document.addEventListener("DOMContentLoaded", () => {
     const togglePassword = document.getElementById("togglePassword");
     const btnLogin = loginForm.querySelector(".btn-login");
 
+    // ===== SISTEMA DE BLOQUEO POR INTENTOS FALLIDOS =====
+    const MAX_INTENTOS = 5;
+    const TIEMPO_BLOQUEO_MS = 5 * 60 * 1000; // 5 minutos en milisegundos
+    
+    function obtenerDatosBloqueo() {
+        const datos = localStorage.getItem('loginBloqueo');
+        if (!datos) return { intentos: 0, bloqueadoHasta: null };
+        return JSON.parse(datos);
+    }
+    
+    function guardarDatosBloqueo(intentos, bloqueadoHasta = null) {
+        localStorage.setItem('loginBloqueo', JSON.stringify({ intentos, bloqueadoHasta }));
+    }
+    
+    function verificarBloqueo() {
+        const datos = obtenerDatosBloqueo();
+        
+        if (datos.bloqueadoHasta) {
+            const ahora = new Date().getTime();
+            const bloqueadoHasta = new Date(datos.bloqueadoHasta).getTime();
+            
+            if (ahora < bloqueadoHasta) {
+                // Aún está bloqueado
+                const tiempoRestante = Math.ceil((bloqueadoHasta - ahora) / 1000 / 60);
+                return {
+                    bloqueado: true,
+                    minutos: tiempoRestante
+                };
+            } else {
+                // El bloqueo expiró, resetear
+                guardarDatosBloqueo(0, null);
+                return { bloqueado: false };
+            }
+        }
+        
+        return { bloqueado: false };
+    }
+    
+    function bloquearFormulario(minutos) {
+        emailInput.disabled = true;
+        passwordInput.disabled = true;
+        btnLogin.disabled = true;
+        if (rememberMe) rememberMe.disabled = true;
+        if (togglePassword) togglePassword.disabled = true;
+        
+        // Actualizar el botón con contador
+        actualizarContadorBloqueo(minutos);
+    }
+    
+    function desbloquearFormulario() {
+        emailInput.disabled = false;
+        passwordInput.disabled = false;
+        btnLogin.disabled = false;
+        if (rememberMe) rememberMe.disabled = false;
+        if (togglePassword) togglePassword.disabled = false;
+        
+        btnLogin.innerHTML = '<span class="btn-text">Iniciar Sesión</span> <i class="fas fa-arrow-right"></i>';
+    }
+    
+    function actualizarContadorBloqueo(minutosRestantes) {
+        const intervalo = setInterval(() => {
+            const estadoBloqueo = verificarBloqueo();
+            
+            if (!estadoBloqueo.bloqueado) {
+                clearInterval(intervalo);
+                desbloquearFormulario();
+                mostrarMensaje('✅ Formulario desbloqueado. Puedes intentar de nuevo.', 'login-success');
+                return;
+            }
+            
+            const mins = estadoBloqueo.minutos;
+            const segs = Math.ceil(((new Date(obtenerDatosBloqueo().bloqueadoHasta).getTime() - new Date().getTime()) / 1000) % 60);
+            
+            btnLogin.innerHTML = `
+                <i class="fas fa-lock"></i> 
+                <span class="btn-text">Bloqueado: ${mins}:${segs.toString().padStart(2, '0')}</span>
+            `;
+        }, 1000);
+    }
+    
+    function registrarIntentoFallido() {
+        const datos = obtenerDatosBloqueo();
+        const nuevosIntentos = datos.intentos + 1;
+        
+        if (nuevosIntentos >= MAX_INTENTOS) {
+            // Bloquear formulario
+            const bloqueadoHasta = new Date(new Date().getTime() + TIEMPO_BLOQUEO_MS);
+            guardarDatosBloqueo(nuevosIntentos, bloqueadoHasta);
+            
+            bloquearFormulario(5);
+            mostrarError(
+                `🔒 Has superado el límite de ${MAX_INTENTOS} intentos fallidos. ` +
+                `El formulario está bloqueado por 5 minutos.`
+            );
+        } else {
+            guardarDatosBloqueo(nuevosIntentos, null);
+            const intentosRestantes = MAX_INTENTOS - nuevosIntentos;
+            mostrarError(
+                `Correo o contraseña incorrectos. ` +
+                `Te quedan ${intentosRestantes} intento${intentosRestantes !== 1 ? 's' : ''}.`
+            );
+        }
+    }
+    
+    function resetearIntentos() {
+        guardarDatosBloqueo(0, null);
+    }
+    
+    // Verificar si está bloqueado al cargar la página
+    const estadoInicial = verificarBloqueo();
+    if (estadoInicial.bloqueado) {
+        bloquearFormulario(estadoInicial.minutos);
+        mostrarError(
+            `🔒 Formulario bloqueado por intentos fallidos. ` +
+            `Podrás intentar de nuevo en ${estadoInicial.minutos} minuto${estadoInicial.minutos !== 1 ? 's' : ''}.`
+        );
+    }
+
     // ==== FUNCIÓN DE HASH (debe ser idéntica a la de registro.js) ====
     async function hashPassword(password) {
         const encoder = new TextEncoder();
@@ -232,6 +350,15 @@ document.addEventListener("DOMContentLoaded", () => {
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        // ✅ Verificar si está bloqueado antes de procesar
+        const estadoBloqueo = verificarBloqueo();
+        if (estadoBloqueo.bloqueado) {
+            mostrarError(
+                `🔒 Formulario bloqueado. Intenta de nuevo en ${estadoBloqueo.minutos} minuto${estadoBloqueo.minutos !== 1 ? 's' : ''}.`
+            );
+            return;
+        }
+
         // Validar campos
         const validacion = validarCampos();
         if (!validacion.valido) {
@@ -296,7 +423,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (!userFound) {
-                mostrarError("Correo o contraseña incorrectos");
+                // ✅ Registrar intento fallido
+                registrarIntentoFallido();
+                
                 btnLogin.disabled = false;
                 btnLogin.innerHTML = btnTextOriginal;
                 
@@ -305,6 +434,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 passwordInput.focus();
                 return;
             }
+            
+            // ✅ Login exitoso - resetear intentos
+            resetearIntentos();
 
             // Verificar si la cuenta está activa
             if (userFound.activo === false) {
