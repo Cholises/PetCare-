@@ -172,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Solo permitir letras, espacios y acentos
         if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/.test(char)) {
             e.preventDefault();
-            mostrarErrorTemporal(e.target, "Solo se permiten letras");
         }
         
         // No permitir más de un espacio seguido
@@ -204,14 +203,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // NO PERMITIR ESPACIOS
         if (char === ' ') {
             e.preventDefault();
-            mostrarErrorTemporal(e.target, "No se permiten espacios");
             return;
         }
         
         // Solo permitir caracteres válidos en email: letras, números, @, ., _, -
         if (!/^[a-zA-Z0-9@._-]$/.test(char)) {
             e.preventDefault();
-            mostrarErrorTemporal(e.target, "Carácter no válido en email");
         }
     }
 
@@ -233,7 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // NO PERMITIR ESPACIOS
         if (char === ' ') {
             e.preventDefault();
-            mostrarErrorTemporal(e.target, "No se permiten espacios en la contraseña");
             return;
         }
     }

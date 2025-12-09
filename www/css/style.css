@@ -114,6 +114,8 @@ button {
 .content {
   padding: 25px;
   flex: 1;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Tarjetas base */
@@ -160,4 +162,273 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* ========================================
+   ESTILOS DEL CALENDARIO
+   ======================================== */
+#calendarApp {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin: 20px 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  background: #f9fafb;
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+.calendar-cell.header-cell {
+  background: var(--primary-purple);
+  color: white;
+  font-weight: 700;
+  font-size: 11px;
+  aspect-ratio: auto;
+  padding: 8px 2px;
+}
+
+.calendar-cell.day-cell {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.calendar-cell.day-cell:hover {
+  background: var(--accent-pink);
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-cell.empty {
+  background: transparent;
+  border: none;
+}
+
+.day-number {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1;
+}
+
+.events-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--primary-purple);
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.calendar-header h3 {
+  flex: 1;
+  text-align: center;
+  font-size: 20px;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.calendar-header .btn {
+  padding: 10px 16px;
+  background: var(--primary-purple);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.calendar-header .btn:hover {
+  background: #693ea5;
+  transform: scale(1.05);
+}
+
+.day-events {
+  margin-top: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.no-events {
+  text-align: center;
+  color: var(--text-dark);
+  opacity: 0.6;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* ========================================
+   RESPONSIVIDAD DEL CALENDARIO
+   ======================================== */
+
+/* Pantallas medianas (tablets) */
+@media (max-width: 768px) {
+  .calendar-grid {
+    gap: 3px;
+  }
+  
+  .calendar-cell {
+    padding: 3px;
+  }
+  
+  .calendar-cell.header-cell {
+    font-size: 10px;
+    padding: 6px 1px;
+  }
+  
+  .day-number {
+    font-size: 12px;
+  }
+  
+  .events-badge {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+    top: 1px;
+    right: 1px;
+  }
+  
+  .calendar-header h3 {
+    font-size: 18px;
+  }
+  
+  .calendar-header .btn {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 480px) {
+  .content {
+    padding: 12px;
+  }
+  
+  .card {
+    padding: 15px;
+  }
+  
+  .calendar-grid {
+    gap: 2px;
+  }
+  
+  .calendar-cell {
+    padding: 2px;
+    border-radius: 4px;
+  }
+  
+  .calendar-cell.header-cell {
+    font-size: 9px;
+    padding: 4px 0;
+  }
+  
+  .day-number {
+    font-size: 11px;
+  }
+  
+  .events-badge {
+    width: 12px;
+    height: 12px;
+    font-size: 8px;
+    top: 1px;
+    right: 1px;
+  }
+  
+  .calendar-header {
+    margin-bottom: 15px;
+    gap: 8px;
+  }
+  
+  .calendar-header h3 {
+    font-size: 16px;
+  }
+  
+  .calendar-header .btn {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 360px) {
+  .content {
+    padding: 10px;
+  }
+  
+  .card {
+    padding: 12px;
+  }
+  
+  .calendar-grid {
+    gap: 1px;
+  }
+  
+  .calendar-cell {
+    padding: 1px;
+    border-radius: 3px;
+  }
+  
+  .calendar-cell.header-cell {
+    font-size: 8px;
+    padding: 3px 0;
+  }
+  
+  .day-number {
+    font-size: 10px;
+  }
+  
+  .events-badge {
+    width: 10px;
+    height: 10px;
+    font-size: 7px;
+  }
+  
+  .calendar-header h3 {
+    font-size: 14px;
+  }
+  
+  .calendar-header .btn {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
 }
