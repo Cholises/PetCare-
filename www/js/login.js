@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ===== SISTEMA DE BLOQUEO POR INTENTOS FALLIDOS =====
     const MAX_INTENTOS = 5;
-    const TIEMPO_BLOQUEO_MS = 5 * 60 * 1000; // 5 minutos en milisegundos
+    const TIEMPO_BLOQUEO_MS = 30 * 1000; // 30 segundos en milisegundos
     
     function obtenerDatosBloqueo() {
         const datos = localStorage.getItem('loginBloqueo');
@@ -145,13 +145,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
             
-            const mins = estadoBloqueo.minutos;
-            const segs = Math.ceil(((new Date(obtenerDatosBloqueo().bloqueadoHasta).getTime() - new Date().getTime()) / 1000) % 60);
+            const tiempoRestanteMs = new Date(obtenerDatosBloqueo().bloqueadoHasta).getTime() - new Date().getTime();
+            const segs = Math.ceil(tiempoRestanteMs / 1000);
             
-            btnLogin.innerHTML = `
-                <i class="fas fa-lock"></i> 
-                <span class="btn-text">Bloqueado: ${mins}:${segs.toString().padStart(2, '0')}</span>
-            `;
+            if (segs < 60) {
+                btnLogin.innerHTML = `
+                    <i class="fas fa-lock"></i> 
+                    <span class="btn-text">Bloqueado: ${segs}s</span>
+                `;
+            } else {
+                const mins = Math.floor(segs / 60);
+                const segsRestantes = segs % 60;
+                btnLogin.innerHTML = `
+                    <i class="fas fa-lock"></i> 
+                    <span class="btn-text">Bloqueado: ${mins}:${segsRestantes.toString().padStart(2, '0')}</span>
+                `;
+            }
         }, 1000);
     }
     
@@ -164,10 +173,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const bloqueadoHasta = new Date(new Date().getTime() + TIEMPO_BLOQUEO_MS);
             guardarDatosBloqueo(nuevosIntentos, bloqueadoHasta);
             
-            bloquearFormulario(5);
+            bloquearFormulario(1);
             mostrarError(
                 `🔒 Has superado el límite de ${MAX_INTENTOS} intentos fallidos. ` +
-                `El formulario está bloqueado por 5 minutos.`
+                `El formulario está bloqueado por 30 segundos.`
             );
         } else {
             guardarDatosBloqueo(nuevosIntentos, null);
@@ -187,10 +196,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const estadoInicial = verificarBloqueo();
     if (estadoInicial.bloqueado) {
         bloquearFormulario(estadoInicial.minutos);
-        mostrarError(
-            `🔒 Formulario bloqueado por intentos fallidos. ` +
-            `Podrás intentar de nuevo en ${estadoInicial.minutos} minuto${estadoInicial.minutos !== 1 ? 's' : ''}.`
-        );
+        const tiempoRestanteSeg = Math.ceil((new Date(obtenerDatosBloqueo().bloqueadoHasta).getTime() - new Date().getTime()) / 1000);
+        const mensaje = tiempoRestanteSeg < 60 
+            ? `🔒 Formulario bloqueado por intentos fallidos. Podrás intentar de nuevo en ${tiempoRestanteSeg} segundo${tiempoRestanteSeg !== 1 ? 's' : ''}.`
+            : `🔒 Formulario bloqueado por intentos fallidos. Podrás intentar de nuevo en ${estadoInicial.minutos} minuto${estadoInicial.minutos !== 1 ? 's' : ''}.`;
+        mostrarError(mensaje);
     }
 
     // ==== FUNCIÓN DE HASH (debe ser idéntica a la de registro.js) ====
@@ -353,9 +363,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // ✅ Verificar si está bloqueado antes de procesar
         const estadoBloqueo = verificarBloqueo();
         if (estadoBloqueo.bloqueado) {
-            mostrarError(
-                `🔒 Formulario bloqueado. Intenta de nuevo en ${estadoBloqueo.minutos} minuto${estadoBloqueo.minutos !== 1 ? 's' : ''}.`
-            );
+            const tiempoRestanteSeg = Math.ceil((new Date(obtenerDatosBloqueo().bloqueadoHasta).getTime() - new Date().getTime()) / 1000);
+            const mensaje = tiempoRestanteSeg < 60
+                ? `🔒 Formulario bloqueado. Intenta de nuevo en ${tiempoRestanteSeg} segundo${tiempoRestanteSeg !== 1 ? 's' : ''}.`
+                : `🔒 Formulario bloqueado. Intenta de nuevo en ${estadoBloqueo.minutos} minuto${estadoBloqueo.minutos !== 1 ? 's' : ''}.`;
+            mostrarError(mensaje);
             return;
         }
 
