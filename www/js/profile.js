@@ -182,14 +182,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Foto de la mascota - Se mantiene pero no se puede editar
             const fotoMascota = mascota.foto || mascota.image ||
-                'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+                'https://media.istockphoto.com/id/1005374612/es/vector/logotipo-de-icono-del-pata-de-perro.jpg?s=612x612&w=0&k=20&c=Tvc9Ur17w0PDaU0ZX-AfI46dtS2ZAndzVkhjfbY9xkA=';
 
             return `
                         <div class="pet-card" data-id="${mascota.id}">
                                <img src="${fotoMascota}" 
                                    alt="${mascota.nombre}" 
                                    class="pet-image"
-                                   onerror="this.src='https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
+                                   onerror="this.src='https://media.istockphoto.com/id/1005374612/es/vector/logotipo-de-icono-del-pata-de-perro.jpg?s=612x612&w=0&k=20&c=Tvc9Ur17w0PDaU0ZX-AfI46dtS2ZAndzVkhjfbY9xkA='">
                             <div class="pet-info">
                                 <h3 class="pet-name">${mascota.nombre || 'Sin nombre'}</h3>
                                 <span class="pet-type">${mascota.tipo || mascota.especie || 'Mascota'}</span>

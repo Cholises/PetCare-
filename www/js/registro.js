@@ -664,7 +664,15 @@ document.addEventListener('DOMContentLoaded', () => {
             delete currentUser.password;
             localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-            window.location.href = "creado.html";
+            // Crear sesión activa para evitar alerta de sesión expirada
+            const userSession = {
+                sessionActive: true,
+                loginTime: new Date().toISOString(),
+                userId: usuario.id
+            };
+            localStorage.setItem("userSession", JSON.stringify(userSession));
+
+            window.location.href = "menu.html";
 
         } catch (error) {
             console.error("Error al crear cuenta:", error);

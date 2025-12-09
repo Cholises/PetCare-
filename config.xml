@@ -8,7 +8,7 @@
     <content src="index.html" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
-    
+    <icon src="res/icon/icon.jpeg" />
     <!-- Configuración para viewport en dispositivos móviles -->
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#8B5CF6" />
