@@ -414,6 +414,8 @@ body {
     align-items: center;
     gap: 16px;
     margin-top: 40px;
+    position: relative;
+    z-index: 60; /* asegurar que los botones estén por encima de las slides */
 }
 
 .btn-skip {

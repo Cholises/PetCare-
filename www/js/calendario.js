@@ -27,23 +27,25 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     const userPetIds = userPets.map(p => p.id);
 
-    // Citas
+    // Citas (todas, sin filtro de fecha)
     const todasCitas = JSON.parse(localStorage.getItem('citas') || '[]');
     const citas = todasCitas
-      .filter(c => userPetIds.includes(c.mascotaId))
+      .filter(c => userPetIds.includes(c.mascotaId) && c.fecha)
       .map(c => ({
         type: 'cita',
         id: c.id,
-        title: c.nombreMascota || 'Cita',
+        title: c.nombreMascota || c.tipo || 'Cita',
         date: c.fecha,
         time: c.hora || '00:00',
         raw: c
       }));
+    
+    console.log('📅 Citas cargadas:', citas.length);
 
-    // Vacunas (tomamos nextDoseDate si existe, sino applicationDate)
+    // Vacunas (todas, sin filtro de fecha)
     const todasVacunas = JSON.parse(localStorage.getItem('vacunas') || '[]');
     const vacunas = todasVacunas
-      .filter(v => (v.userId === correoUsuario) || userPetIds.includes(v.petId))
+      .filter(v => ((v.userId === correoUsuario) || userPetIds.includes(v.petId)) && (v.nextDoseDate || v.applicationDate))
       .map(v => ({
         type: 'vacuna',
         id: v.id,
@@ -52,11 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
         time: '00:00',
         raw: v
       }));
+    
+    console.log('💉 Vacunas cargadas:', vacunas.length);
 
-    // Recordatorios
+    // Recordatorios (todos, sin filtro de fecha)
     const todosRecordatorios = JSON.parse(localStorage.getItem('recordatorios') || '[]');
     const recordatorios = todosRecordatorios
-      .filter(r => userPetIds.includes(r.mascotaId))
+      .filter(r => userPetIds.includes(r.mascotaId) && r.fecha)
       .map(r => ({
         type: 'recordatorio',
         id: r.id,
@@ -65,11 +69,30 @@ document.addEventListener('DOMContentLoaded', () => {
         time: r.hora || '00:00',
         raw: r
       }));
+    
+    console.log('🔔 Recordatorios cargados:', recordatorios.length);
+
+    // Historial médico (todos, sin filtro de fecha)
+    const todosRegistros = JSON.parse(localStorage.getItem('historialMedico') || '[]');
+    const registrosFuturos = todosRegistros
+      .filter(r => userPetIds.includes(r.mascotaId) && r.fecha)
+      .map(r => ({
+        type: 'historial',
+        id: r.id,
+        title: r.titulo || r.motivo || r.tipo || 'Registro médico',
+        date: r.fecha,
+        time: r.hora || '00:00',
+        raw: r
+      }));
+    
+    console.log('🏥 Registros médicos cargados:', registrosFuturos.length);
 
     // Normalizar fechas y filtrar inválidas
-    const all = [...citas, ...vacunas, ...recordatorios]
+    const all = [...citas, ...vacunas, ...recordatorios, ...registrosFuturos]
       .map(e => ({ ...e, datetime: parseDateTime(e.date, e.time) }))
       .filter(e => e.datetime && !isNaN(e.datetime.getTime()));
+    
+    console.log('✅ TOTAL eventos en calendario:', all.length, all);
 
     return { events: all, userPets };
   }
@@ -253,6 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
     .event-item.cita .event-time { color:#ef4444; }
     .event-item.vacuna .event-time { color:#0ea5a4; }
     .event-item.recordatorio .event-time { color:#f59e0b; }
+    .event-item.historial .event-time { color:#6366f1; font-weight:700; }
+    .event-item.historial { background: #eef2ff; border-left: 4px solid #6366f1; }
     .event-link { text-decoration: none; color: inherit; display: block; }
   `;
   document.head.appendChild(style);

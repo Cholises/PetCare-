@@ -16,6 +16,8 @@
 body {
   margin: 0;
   padding: 0;
+  padding-left: max(0px, env(safe-area-inset-left));
+  padding-right: max(0px, env(safe-area-inset-right));
   font-family: var(--font-main);
   background-color: var(--secondary-beige);
   color: var(--text-dark);
@@ -29,6 +31,9 @@ header {
   background-color: var(--primary-purple);
   color: white;
   padding: 15px 20px;
+  padding-left: max(15px, calc(20px + env(safe-area-inset-left)));
+  padding-right: max(15px, calc(20px + env(safe-area-inset-right)));
+  padding-top: max(15px, calc(15px + env(safe-area-inset-top)));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -138,7 +143,3 @@ a {
 a:hover {
   text-decoration: underline;
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> ea26268efb3a189a6386d552c26d066151d7a14c

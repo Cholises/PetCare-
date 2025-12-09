@@ -5,9 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== VERIFICAR SESIÓN PRIMERO =====
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (!currentUser) {
-    console.warn("⚠️ No hay usuario logueado");
-    alert("⚠️ Debes iniciar sesión primero");
+  const userSession = JSON.parse(localStorage.getItem("userSession") || "null");
+  
+  // Validar que tanto currentUser como userSession existan y sean válidos
+  if (!currentUser || !userSession || !userSession.sessionActive) {
+    console.warn("⚠️ No hay sesión activa");
+    alert("⚠️ Tu sesión ha expirado. Por favor inicia sesión nuevamente");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("userSession");
     window.location.href = "login.html";
     return;
   }
@@ -587,8 +592,27 @@ function getAllUpcomingEvents() {
     }))
     .filter(e => !isNaN(e.datetime) && e.datetime >= now && !e.raw.completado);
 
-  // Unir y ordenar
-  const allEvents = [...upcomingCitas, ...upcomingVacunas, ...upcomingRecordatorios]
+  // Cargar registros médicos futuros
+  const todosRegistros = JSON.parse(localStorage.getItem('historialMedico') || '[]');
+  const upcomingHistorial = todosRegistros
+    .filter(r => userPetIds.includes(r.mascotaId) && r.fecha)
+    .map(r => {
+      const fechaRegistro = r.fecha && r.hora ? new Date(`${r.fecha}T${r.hora}`) : (r.fecha ? new Date(r.fecha) : null);
+      return {
+        type: 'historial',
+        id: r.id,
+        title: r.titulo || r.motivo || r.tipo || 'Registro médico',
+        subtitle: r.tipo || '',
+        date: r.fecha,
+        time: r.hora || '00:00',
+        datetime: fechaRegistro,
+        raw: r
+      };
+    })
+    .filter(e => e.datetime && !isNaN(e.datetime) && e.datetime >= now);
+
+  // Unir y ordenar todos los eventos futuros
+  const allEvents = [...upcomingCitas, ...upcomingVacunas, ...upcomingRecordatorios, ...upcomingHistorial]
     .sort((a,b) => a.datetime - b.datetime);
 
   // Retornar estructura útil
@@ -674,7 +698,8 @@ function updateNotificationBadge(allEvents) {
 
     if (unread > 0) {
       notificationBadge.textContent = unread;
-      notificationBadge.style.display = 'inline-block';
+      // use flex to match CSS alignment
+      notificationBadge.style.display = 'flex';
     } else {
       notificationBadge.textContent = '';
       notificationBadge.style.display = 'none';

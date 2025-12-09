@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== VARIABLES GLOBALES =====
     let citas = [];
     let mascotas = [];
+    let vacunas = [];
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
     let editingAppointmentId = null;
@@ -58,7 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const mascotasIds = mascotas.map(m => m.id);
         citas = todasCitas.filter(c => mascotasIds.includes(c.mascotaId));
         
-        
+        // Cargar vacunas próximas del usuario
+        const todasVacunas = JSON.parse(localStorage.getItem('vacunas') || '[]');
+        vacunas = todasVacunas.filter(v => 
+            (v.userId === correoUsuario) || mascotasIds.includes(v.petId)
+        );
 
         // Si no hay mascotas, mostrar advertencia
         if (mascotas.length === 0) {
@@ -523,11 +528,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const date = new Date(currentYear, currentMonth, day);
             const dateStr = formatDate(date);
             const hasCita = citas.some(c => c.fecha === dateStr);
+            const hasVacuna = vacunas.some(v => v.nextDoseDate === dateStr || v.applicationDate === dateStr);
             const isToday = date.toDateString() === today.toDateString();
             
             let classes = 'calendar-day';
             if (isToday) classes += ' today';
             if (hasCita) classes += ' has-appointment';
+            if (hasVacuna) classes += ' has-vaccine';
             
             calendarHTML += `<div class="${classes}" data-date="${dateStr}">${day}</div>`;
         }

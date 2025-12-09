@@ -403,7 +403,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                
+                // 🔐 Limpiar TODA la sesión
                 localStorage.removeItem('currentUser');
+                localStorage.removeItem('userSession');
+                localStorage.removeItem('rememberedLogin');
+                localStorage.removeItem('onboardingCompleted');
+                
+                // Redirigir a login
                 window.location.href = 'login.html';
             });
         }
