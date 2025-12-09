@@ -39,6 +39,22 @@ h1, h2, h3 {
   margin: 0;
 }
 
+/* Centrar títulos globalmente (h1..h5). Se puede sobreescribir por selectores más específicos. */
+h1, h2, h3, h4, h5 {
+  text-align: center;
+}
+
+/* Ajuste para encabezados de sección: mantener 'Ver todo' a la derecha
+   pero centrar el título dentro del espacio disponible. */
+.section-header h2 {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.section-header .view-all {
+  margin-left: auto;
+}
+
 /* Botón general */
 button {
   border: none;
@@ -104,6 +120,13 @@ button {
 p {
   line-height: 1.6;
   margin-top: 10px;
+}
+
+/* Imágenes responsivas por defecto */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* Links */

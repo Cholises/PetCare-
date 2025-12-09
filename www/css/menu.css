@@ -1229,3 +1229,39 @@ body {
     right: 20px;
   }
 }
+
+/* Notification panel (dropdown) */
+.notification-panel {
+  position: absolute;
+  right: 16px;
+  top: 64px;
+  width: 320px;
+  max-height: 60vh;
+  overflow: auto;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  border-radius: 10px;
+  z-index: 9999;
+  padding: 8px;
+}
+
+.notification-panel .notification-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  align-items: center;
+  border: 1px solid rgba(0,0,0,0.04);
+  margin-bottom: 6px;
+}
+
+@media (max-width: 480px) {
+  .notification-panel {
+    right: 12px;
+    left: 12px;
+    width: auto;
+    top: 72px;
+  }
+}
